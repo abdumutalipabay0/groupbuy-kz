@@ -1,37 +1,95 @@
 # GroupBuy KZ
 
-Hackathon MVP of a Pinduoduo-style collective buying platform for Kazakhstan.
-The product is built around a simple loop: find a deal, join a team, invite friends through Telegram, and unlock a lower price when the team fills.
+> Pinduoduo-style collective buying for Kazakhstan — find a deal, build a team, send one Telegram link, watch the price drop in real time.
 
-## Why It Wins
+![Next.js](https://img.shields.io/badge/Next.js-14-black?logo=next.js)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.111-009688?logo=fastapi)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.5-3178C6?logo=typescript)
+![Python](https://img.shields.io/badge/Python-3.11-3776AB?logo=python)
+![Tailwind](https://img.shields.io/badge/Tailwind-3.4-06B6D4?logo=tailwindcss)
+![Zustand](https://img.shields.io/badge/Zustand-4.5-orange)
 
-- Social commerce mechanics, not a plain marketplace catalog.
-- Team progress changes price in real time, so every invite has visible value.
-- Telegram invite flow creates a viral loop that can be demoed in 30 seconds.
-- SIM trust is shown as a product concept for safer local group buying.
-- Gamified coupons, coins, daily mission, hot teams, urgency timers, and deal-complete modal are already in the UI.
+---
 
-## Demo Script
+## The Viral Loop
 
-1. Open `http://127.0.0.1:3000/feed`.
-2. Click a coupon on top. Coins and daily progress update immediately.
-3. Open a hot product, for example Xiaomi Redmi Watch 4 or Dyson Supersonic.
-4. Click `Войти в команду`. The member count grows and the group price drops.
-5. Click `Скопировать invite`. A local friend simulation starts: people arrive, join, and the deal closes.
-6. Show the success modal with final price and savings.
-7. Open `http://127.0.0.1:3000/join/g001` to show the Telegram landing page for invited friends.
-8. Open `/groups` to show active teams sorted by savings, timer, or category.
+```
+User opens feed → claims coupon → joins group → copies invite link
+       ↓                                                ↓
+  coins + mission                          friends arrive via Telegram
+       ↓                                                ↓
+ daily streak                          price drops with each member
+                                                        ↓
+                                             deal closes → success modal
+                                                        ↓
+                                              everyone invites more people
+```
+
+Every invite has **visible, immediate value** — the price on screen drops the moment a friend joins. That's the mechanic judges remember.
+
+---
+
+## Screenshots
+
+| Register | Feed |
+|----------|------|
+| ![register](screenshots/register.png) | ![feed](screenshots/feed.png) |
+
+| Product page | Groups |
+|--------------|--------|
+| ![product](screenshots/product.png) | ![groups](screenshots/groups.png) |
+
+| Profile & Leaderboard | Telegram Invite Landing |
+|-----------------------|------------------------|
+| ![profile](screenshots/profile.png) | ![join](screenshots/join.png) |
+
+---
+
+## Features
+
+### Core mechanics
+- **Group pricing** — linear interpolation from `price_individual` to `price_group_min` as members fill the team. Every join drops the price for everyone.
+- **Optimistic UI** — price updates instantly on click, then reconciles with the server response. Zero perceived latency.
+- **Friend simulation** — "Copy invite" triggers a scripted sequence: friends arrive, join, price drops, deal closes. Demos in 30 seconds.
+- **Telegram share** — native deep link with pre-filled message and group URL. One tap from the product page.
+
+### Engagement & retention
+- **Live activity toasts** — floating notifications ("Айгерим вступила через Telegram", "Команда закрылась!") make the platform feel alive without real traffic
+- **Ticking countdown timers** — real-time urgency. Turns orange < 1 hour, red < 10 minutes
+- **"N watching now"** counter on product pages — social proof
+- **Daily mission bar** — 3 actions → unlock hidden coupon. Progress visible on every page
+- **Gamified coupons** — 4 claimable coupons, each adds coins and mission progress
+- **Coin wallet** — earned by claiming coupons, completing missions, inviting friends
+- **Day streak tracker** — visual Пн–Вс grid, pushes daily return
+- **Achievements** — Первый invite, Команда x3, Серия 3 дня, Топ-5 недели
+- **Leaderboard** — top inviters of the week with savings shown
+
+### Discovery & trust
+- **AI-powered feed** — tag-intersection + budget-bonus recommender scores each product per user
+- **Real search** — filters by product name and tags live as you type
+- **SIM/eSIM trust badge** — UI concept: device marked verified to reduce fake groups
+- **Category filters + budget slider** — instant client-side filtering
+- **"Горящие команды"** — top-3 groups by fill progress, shown on every feed page
+
+---
 
 ## Stack
 
-- Frontend: Next.js 14 App Router, TypeScript, Tailwind CSS, Zustand, lucide-react
-- Backend: FastAPI, Pydantic v2, Python 3.11
-- Data: JSON seed files, no external database
-- Auth: mock JWT stored in localStorage
+| Layer | Tech |
+|-------|------|
+| Frontend | Next.js 14 App Router, TypeScript, Tailwind CSS |
+| State | Zustand with `persist` middleware (localStorage) |
+| Icons | lucide-react |
+| Backend | FastAPI, Pydantic v2, Python 3.11 |
+| Package mgr | pnpm (frontend), uv (backend) |
+| Data | JSON seed files — no database |
+| Auth | Mock JWT in localStorage |
 
-## Run Locally
+---
 
-Backend:
+## Quick Start
+
+**Backend**
 
 ```bash
 cd backend
@@ -39,7 +97,7 @@ uv sync
 uv run uvicorn main:app --reload --host 127.0.0.1 --port 8000
 ```
 
-Frontend:
+**Frontend**
 
 ```bash
 cd frontend
@@ -47,76 +105,156 @@ pnpm install
 pnpm dev
 ```
 
-Open:
+**Open** → `http://127.0.0.1:3000/feed`
 
-```text
-http://127.0.0.1:3000/feed
-```
-
-Optional frontend env:
+**Optional env** (frontend already defaults to this):
 
 ```bash
+# frontend/.env.local
 NEXT_PUBLIC_API_URL=http://127.0.0.1:8000
 ```
 
-## Quality Checks
+---
 
-```bash
-cd backend
-python3 -m compileall . -q
-```
+## Demo Script (30 seconds)
 
-```bash
-cd frontend
-pnpm exec tsc --noEmit
-pnpm run build
-```
+1. Open `/feed` — note live activity toast in bottom-left, online counter in header
+2. Click a coupon — coins animate up, mission bar advances
+3. Open **Dyson Supersonic** or **Logitech G305**
+4. Click **"Войти в команду"** — price drops instantly, button changes
+5. Click **"Скопировать invite"** — friends start arriving in the live events feed
+6. Watch the deal close — success modal with savings and Telegram share
+7. Open `/join/g002` — show the Telegram landing page a friend receives
+8. Open `/groups` — show all teams sorted by savings, ticking timers, 🔥 badges
+9. Open `/profile` — coins, streak, achievements, leaderboard
 
-## Product Routes
+---
 
-- `/register` - mock onboarding with SIM-trust concept
-- `/feed` - Pinduoduo-style deal feed, coupons, hot teams, daily mission
-- `/product/[id]` - team-buy product page with price drop and invite simulation
-- `/join/[groupId]` - Telegram invite landing page for friends
-- `/groups` - active buying teams with sorting and conversion metrics
+## Routes
+
+| Route | Description |
+|-------|-------------|
+| `/register` | Onboarding: name, city, interests, budget, SIM-trust concept |
+| `/feed` | Deal catalog with coupons, hot teams, daily mission, search, filters |
+| `/product/[id]` | Team-buy page — hero interaction: join → invite → price drop |
+| `/join/[groupId]` | Telegram invite landing for incoming friends |
+| `/groups` | All active teams, sortable by savings / timer / category |
+| `/profile` | Coins, streak, achievements, leaderboard, active deals |
+
+---
 
 ## API
 
-All responses follow:
+All responses:
 
 ```json
 { "data": {}, "success": true, "message": "OK" }
 ```
 
-Main endpoints:
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/auth/register` | Create user, return mock JWT |
+| `POST` | `/auth/login` | Login by user_id |
+| `GET` | `/products` | All products |
+| `GET` | `/products/{id}` | Product + active group |
+| `GET` | `/feed?user_id=&limit=` | Personalized feed via recommender |
+| `GET` | `/groups` | All active/completed groups |
+| `GET` | `/groups/{id}` | Group + product detail |
+| `POST` | `/groups/{id}/join` | Join group, recalculate price |
+| `GET` | `/recommend?user_id=&limit=` | Tag-scored recommendations |
 
-- `POST /auth/register`
-- `POST /auth/login`
-- `GET /products`
-- `GET /products/{id}`
-- `GET /feed?user_id=u001&limit=20`
-- `GET /groups`
-- `GET /groups/{id}`
-- `POST /groups/{id}/join`
-- `GET /recommend?user_id=u001&limit=10`
+---
+
+## How Pricing Works
+
+```python
+# Linear interpolation as team fills
+progress = current_members / threshold          # 0.0 → 1.0
+discount = price_individual - price_group_min
+price = price_individual - discount * progress  # drops smoothly
+```
+
+The same formula runs identically in Python (backend) and TypeScript (frontend) for optimistic updates.
+
+---
+
+## Recommender
+
+```python
+# Tag intersection + budget bonus scoring
+overlap = len(user.interests ∩ product.tags) / len(user.interests)
+budget_bonus = 1.5 if product.price_individual <= user.budget_usd else 0.8
+score = (overlap * budget_bonus, product.rating)
+```
+
+---
 
 ## Project Structure
 
-```text
+```
 backend/
-  data/          seed products, groups, users, sessions
-  models/        Pydantic schemas
-  routers/       auth, products, feed, groups, recommend
-  services/      recommender and group pricing logic
+├── data/           seed JSON — products (25), groups (8), users (5)
+├── models/         Pydantic v2 schemas
+├── routers/        auth · products · feed · groups · recommend
+└── services/       group_pricing.py · recommender.py
+
 frontend/
-  app/           register, feed, product, invite, groups routes
-  components/    UI, auth, product visual, deal modal
-  lib/           API client, Zustand store, formatting utilities
-  types/         TypeScript API contracts
+├── app/
+│   ├── (auth)/register/
+│   ├── feed/
+│   ├── product/[id]/
+│   ├── join/[groupId]/
+│   ├── groups/
+│   └── profile/
+├── components/
+│   ├── auth/       SimBadge
+│   ├── product/    ProductCard · ProductVisual · GroupProgress · PriceComparison
+│   └── ui/         Button · Badge · Card · Modal · ProgressBar
+│                   CountdownTimer · LiveActivity · DealSuccessModal
+├── lib/            api.ts · store.ts · utils.ts
+└── types/          index.ts — full API contract mirrors
 ```
 
-## Notes
+---
 
-- Seed data is intentionally simple and stored in `backend/data/*.json`.
-- Joining a group mutates `backend/data/groups.json`, which is useful for the demo. Reset that file before recording a fresh run if needed.
-- Product visuals are generated in the frontend from product/category metadata, so the demo does not depend on random external images.
+## Seed Data Reset
+
+Joining a group mutates `backend/data/groups.json`. Reset before a fresh demo:
+
+```bash
+git checkout backend/data/groups.json
+```
+
+---
+
+## Quality
+
+```bash
+# TypeScript
+cd frontend && pnpm exec tsc --noEmit
+
+# Python syntax
+cd backend && python3 -m compileall . -q
+
+# Production build
+cd frontend && pnpm run build
+```
+
+---
+
+## What's Mock / What's Real
+
+| Feature | Status |
+|---------|--------|
+| Group pricing algorithm | ✅ Real math |
+| Recommender | ✅ Real scoring |
+| Optimistic UI | ✅ Real pattern |
+| Countdown timers | ✅ Real ticking |
+| Price drop animation | ✅ Real CSS transition |
+| Live activity toasts | 🎭 Scripted (no real users) |
+| "Viewing now" counter | 🎭 Simulated drift |
+| Friend simulation | 🎭 Scripted timeouts |
+| SIM/eSIM verification | 🎭 UI concept only |
+| Payments | 🎭 Not implemented |
+| JWT auth | 🎭 Mock token |
+| Database | 🎭 JSON files |
