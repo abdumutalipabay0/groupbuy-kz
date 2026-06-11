@@ -13,11 +13,19 @@ import { DealSuccessModal } from "@/components/ui/DealSuccessModal";
 import { api } from "@/lib/api";
 import { calculateGroupPrice, cn, formatPrice, savingsPct } from "@/lib/utils";
 import { DEMO_USER, useGroupBuyStore } from "@/lib/store";
-import type { Group, Product, ProductDetail } from "@/types";
+import type { Currency, Group, Product, ProductDetail } from "@/types";
 
 const AVATARS = ["AN", "TM", "DK", "AZ", "MR", "LK", "JS", "BK", "YA", "IV"];
 
-function PriceLadder({ product, currentMembers, currency }: { product: Product; currentMembers: number; currency: string }) {
+function PriceLadder({
+  product,
+  currentMembers,
+  currency,
+}: {
+  product: Product;
+  currentMembers: number;
+  currency: Currency;
+}) {
   const t = product.group_threshold;
   const steps = [1, Math.ceil(t * 0.3), Math.ceil(t * 0.6), t];
   const locale = currency === "USD" ? "en-US" : "ru-KZ";
@@ -36,7 +44,7 @@ function PriceLadder({ product, currentMembers, currency }: { product: Product; 
                 {n === t ? `${n}` : `${n}+`} чел
               </span>
               <span className={`text-sm font-black ${isCurrent ? "text-primary" : isReached ? "text-emerald-600" : "text-stone-500"}`}>
-                {new Intl.NumberFormat("ru-KZ", { style: "currency", currency: "KZT", maximumFractionDigits: 0 }).format(p * 450)}
+                {formatPrice(p, currency, locale)}
               </span>
               <span className={`rounded px-1 text-[10px] font-black ${isReached ? "bg-emerald-100 text-emerald-700" : "bg-stone-200 text-stone-500"}`}>
                 -{pct}%
@@ -160,6 +168,9 @@ export default function ProductPage({ params }: ProductPageProps) {
       setGroup(res.group);
       setDisplayPrice(res.new_price);
       upsertGroup(res.group);
+      if (res.group.status === "completed") {
+        window.setTimeout(() => setSuccessOpen(true), 450);
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not join group");
       setGroup(group);
@@ -321,7 +332,7 @@ export default function ProductPage({ params }: ProductPageProps) {
         <div className="flex flex-col items-center gap-1 rounded-xl border border-stone-100 bg-white px-2 py-3 text-center shadow-sm">
           <Truck size={18} className="text-blue-500" />
           <p className="text-[11px] font-black text-stone-700">7–12 дней</p>
-          <p className="text-[10px] text-stone-400">в Алматы</p>
+          <p className="text-[10px] text-stone-400">в {user.city}</p>
         </div>
         <div className="flex flex-col items-center gap-1 rounded-xl border border-stone-100 bg-white px-2 py-3 text-center shadow-sm">
           <span className="text-lg">⭐</span>
@@ -465,6 +476,7 @@ export default function ProductPage({ params }: ProductPageProps) {
         finalPrice={displayPrice}
         savings={product.price_individual - displayPrice}
         currency={user.currency_preference}
+        shareUrl={inviteUrl}
         onClose={() => setSuccessOpen(false)}
       />
     </div>

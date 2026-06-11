@@ -42,6 +42,8 @@ def join_group(group_id: str, _: JoinGroupRequest) -> ApiResponse[JoinGroupRespo
 
     if group.status == "expired":
         raise HTTPException(status_code=409, detail="Group has expired")
+    if group.status == "completed" or group.current_members >= group.threshold:
+        raise HTTPException(status_code=409, detail="Group is already completed")
 
     next_members = min(group.current_members + 1, group.threshold)
     new_price = calculate_group_price(product, next_members)

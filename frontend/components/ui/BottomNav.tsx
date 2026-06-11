@@ -5,11 +5,11 @@ import { usePathname } from "next/navigation";
 import { Grid2X2, Heart, ShoppingBag, ShoppingCart, User } from "lucide-react";
 
 const TABS = [
-  { label: "Главная", href: "/feed", icon: ShoppingBag },
-  { label: "Каталог", href: "/groups", icon: Grid2X2 },
-  { label: "Избранное", href: "/feed", icon: Heart },
-  { label: "Корзина", href: "/feed", icon: ShoppingCart },
-  { label: "Профиль", href: "/profile", icon: User },
+  { label: "Главная", href: "/feed", icon: ShoppingBag, activeOn: ["/feed", "/product"] },
+  { label: "Каталог", href: "/groups", icon: Grid2X2, activeOn: ["/groups"] },
+  { label: "Избранное", href: "/feed", icon: Heart, activeOn: [] },
+  { label: "Корзина", href: "/feed", icon: ShoppingCart, activeOn: [] },
+  { label: "Профиль", href: "/profile", icon: User, activeOn: ["/profile"] },
 ];
 
 const HIDDEN_PATHS = ["/register", "/join"];
@@ -23,8 +23,8 @@ export function BottomNav() {
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-stone-200 bg-white">
       <div className="mx-auto flex max-w-md items-center justify-around">
-        {TABS.map(({ label, href, icon: Icon }) => {
-          const isActive = pathname === href || (href !== "/feed" && pathname.startsWith(href));
+        {TABS.map(({ label, href, icon: Icon, activeOn }) => {
+          const isActive = activeOn.some((path) => pathname === path || pathname.startsWith(`${path}/`));
           return (
             <Link
               key={label}

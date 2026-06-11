@@ -81,7 +81,7 @@ export function ProductCard({ product, group = null, currency }: ProductCardProp
 
         {/* AI success badge */}
         <p className="mt-0.5 text-[10px] font-semibold text-emerald-600">
-          ✦ AI: {prob}% шанс закрытия
+          {group?.status === "completed" ? "✓ Команда закрыта — цена зафиксирована" : `✦ AI: ${prob}% шанс закрытия`}
         </p>
 
         {/* Progress bar */}

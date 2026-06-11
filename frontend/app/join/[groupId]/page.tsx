@@ -68,7 +68,9 @@ export default function JoinPage({ params }: JoinPageProps) {
     try {
       const response = await api.joinGroup(group.id, DEMO_USER.id);
       setGroup(response.group);
-      window.setTimeout(() => setSuccessOpen(true), 550);
+      if (response.group.status === "completed") {
+        window.setTimeout(() => setSuccessOpen(true), 550);
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not join invite");
       setGroup(group);

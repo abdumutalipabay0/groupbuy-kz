@@ -61,7 +61,7 @@ export function DealSuccessModal({ open, productName, finalPrice, savings, curre
                 { label: "Kaspi Red", color: "bg-[#E60012]", emoji: "🔴" },
                 { label: "Halyk", color: "bg-emerald-600", emoji: "🟢" },
               ].map(({ label, color, emoji }) => (
-                <button key={label} className={`rounded-lg ${color} py-2.5 text-xs font-black text-white`}>
+                <button key={label} type="button" className={`rounded-lg ${color} py-2.5 text-xs font-black text-white`}>
                   {emoji} {label}
                 </button>
               ))}

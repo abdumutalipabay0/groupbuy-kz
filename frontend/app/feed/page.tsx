@@ -4,7 +4,6 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import {
   Bell,
-  Car,
   Dumbbell,
   Flame,
   Grid,
@@ -15,7 +14,6 @@ import {
   Search,
   Shirt,
   Sparkles,
-  Star,
   Users,
 } from "lucide-react";
 import { ProductCard } from "@/components/product/ProductCard";
@@ -23,7 +21,7 @@ import { CountdownTimer } from "@/components/ui/CountdownTimer";
 import { Button } from "@/components/ui/Button";
 import { api } from "@/lib/api";
 import { DEMO_USER, useGroupBuyStore } from "@/lib/store";
-import { calculateGroupPrice, formatPrice, savingsPct } from "@/lib/utils";
+import { formatPrice, savingsPct } from "@/lib/utils";
 import type { Currency, Group, Product } from "@/types";
 
 const MARKETPLACES = ["Все", "AliExpress", "Amazon", "Taobao", "Wildberries"];
@@ -35,8 +33,6 @@ const CATEGORY_ICONS = [
   { label: "Спорт", category: "Sports", icon: Dumbbell },
   { label: "Красота", category: "Beauty", icon: Sparkles },
   { label: "Дом", category: "Home", icon: Home },
-  { label: "Авто", category: null, icon: Car },
-  { label: "Обувь", category: "Fashion", icon: Star },
 ];
 
 const BANNERS = [
@@ -134,7 +130,7 @@ export default function FeedPage() {
         <div className="mx-auto max-w-md">
           <div className="flex items-center gap-2">
             <MapPin size={15} className="shrink-0 text-primary" />
-            <span className="text-xs font-semibold text-stone-500">Алматы</span>
+            <span className="text-xs font-semibold text-stone-500">{user.city}</span>
             <div className="ml-auto">
               <button className="grid h-9 w-9 place-items-center rounded-full text-stone-500 hover:bg-stone-100">
                 <Bell size={20} />
@@ -299,6 +295,7 @@ export default function FeedPage() {
               variant="secondary"
               onClick={() => {
                 setMarketplace("Все");
+                setCategory(null);
                 setSearch("");
               }}
             >
