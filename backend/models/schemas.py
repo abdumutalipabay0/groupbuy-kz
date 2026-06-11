@@ -5,7 +5,15 @@ from pydantic import BaseModel, Field
 
 Currency = Literal["KZT", "USD", "RUB"]
 Language = Literal["ru", "en", "kz"]
-Marketplace = Literal["AliExpress", "Amazon", "Taobao", "Wildberries"]
+Marketplace = Literal[
+    "AliExpress",
+    "Amazon",
+    "Taobao",
+    "Wildberries",
+    "OpenFoodFacts",
+    "OpenBeautyFacts",
+    "OpenProductsFacts",
+]
 GroupStatus = Literal["active", "completed", "expired"]
 
 
@@ -22,6 +30,11 @@ class Product(BaseModel):
     image_url: str
     rating: float = Field(ge=0, le=5)
     origin_country: str
+    source_id: str | None = None
+    source_url: str | None = None
+    source_price: float | None = None
+    source_currency: str | None = None
+    source_location: str | None = None
 
 
 class Group(BaseModel):

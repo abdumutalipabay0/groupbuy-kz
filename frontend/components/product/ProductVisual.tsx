@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { Dumbbell, Headphones, Home, Keyboard, Laptop, Mouse, Shirt, Sparkles, Watch } from "lucide-react";
+import { Apple, Dumbbell, Headphones, Home, Keyboard, Laptop, Mouse, Shirt, Sparkles, Watch } from "lucide-react";
 import type { Product } from "@/types";
 import { cn } from "@/lib/utils";
 
@@ -18,6 +18,7 @@ const categoryStyle: Record<string, { bg: string; accent: string; text: string; 
   Home:        { bg: "from-amber-100 via-white to-yellow-100", accent: "bg-amber-500", text: "text-amber-500", icon: Home },
   Sports:      { bg: "from-emerald-100 via-white to-lime-100", accent: "bg-emerald-600", text: "text-emerald-600", icon: Dumbbell },
   Beauty:      { bg: "from-fuchsia-100 via-white to-pink-100", accent: "bg-fuchsia-500", text: "text-fuchsia-500", icon: Sparkles },
+  Food:        { bg: "from-lime-100 via-white to-emerald-100", accent: "bg-lime-600", text: "text-lime-700", icon: Apple },
 };
 
 function pickIcon(product: Product): typeof Laptop {

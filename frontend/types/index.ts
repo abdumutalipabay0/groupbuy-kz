@@ -1,6 +1,13 @@
 export type Currency = "KZT" | "USD" | "RUB";
 export type Language = "ru" | "en" | "kz";
-export type Marketplace = "AliExpress" | "Amazon" | "Taobao" | "Wildberries";
+export type Marketplace =
+  | "AliExpress"
+  | "Amazon"
+  | "Taobao"
+  | "Wildberries"
+  | "OpenFoodFacts"
+  | "OpenBeautyFacts"
+  | "OpenProductsFacts";
 export type GroupStatus = "active" | "completed" | "expired";
 
 export interface Product {
@@ -16,6 +23,11 @@ export interface Product {
   image_url: string;
   rating: number;
   origin_country: string;
+  source_id?: string | null;
+  source_url?: string | null;
+  source_price?: number | null;
+  source_currency?: string | null;
+  source_location?: string | null;
 }
 
 export interface Group {

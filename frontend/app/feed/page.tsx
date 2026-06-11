@@ -8,6 +8,7 @@ import {
   Flame,
   Grid,
   Home,
+  Apple,
   Laptop,
   MapPin,
   RefreshCw,
@@ -24,7 +25,7 @@ import { DEMO_USER, useGroupBuyStore } from "@/lib/store";
 import { formatPrice, isGroupExpired, savingsPct } from "@/lib/utils";
 import type { Currency, Group, Product } from "@/types";
 
-const MARKETPLACES = ["Все", "AliExpress", "Amazon", "Taobao", "Wildberries"];
+const MARKETPLACES = ["Все", "AliExpress", "Amazon", "Taobao", "Wildberries", "OpenFoodFacts", "OpenBeautyFacts", "OpenProductsFacts"];
 
 const CATEGORY_ICONS = [
   { label: "Все", category: null, icon: Grid },
@@ -33,6 +34,7 @@ const CATEGORY_ICONS = [
   { label: "Спорт", category: "Sports", icon: Dumbbell },
   { label: "Красота", category: "Beauty", icon: Sparkles },
   { label: "Дом", category: "Home", icon: Home },
+  { label: "Еда", category: "Food", icon: Apple },
 ];
 
 const BANNERS = [

@@ -9,6 +9,18 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "images.unsplash.com"
+      },
+      {
+        protocol: "https",
+        hostname: "images.openfoodfacts.org"
+      },
+      {
+        protocol: "https",
+        hostname: "images.openbeautyfacts.org"
+      },
+      {
+        protocol: "https",
+        hostname: "images.openproductsfacts.org"
       }
     ]
   }

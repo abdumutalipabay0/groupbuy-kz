@@ -193,7 +193,7 @@ score = (overlap * budget_bonus, product.rating)
 
 ```
 backend/
-├── data/           seed JSON — products (25), groups (8), users (5)
+├── data/           seed JSON — demo products + 200 real Open Facts products
 ├── models/         Pydantic v2 schemas
 ├── routers/        auth · products · feed · groups · recommend
 └── services/       group_pricing.py · recommender.py
@@ -223,6 +223,20 @@ Joining a group mutates `backend/data/groups.json`. Reset before a fresh demo:
 
 ```bash
 git checkout backend/data/groups.json
+```
+
+## Real Product Catalog
+
+The catalog includes 200 real products imported from public Open Facts APIs:
+
+- `OpenFoodFacts` — real food items with barcode/source URLs and product photos
+- `OpenBeautyFacts` — real beauty/cosmetics items
+- `OpenProductsFacts` — real non-food catalog items
+
+Some products also include observed store prices from Open Prices (`source_price`, `source_currency`, `source_location`). To refresh the real catalog while preserving demo products used by active groups:
+
+```bash
+node scripts/import_openfacts_products.mjs
 ```
 
 ---

@@ -298,6 +298,11 @@ export default function ProductPage({ params }: ProductPageProps) {
           <Badge tone="blue">{product.marketplace}</Badge>
           <Badge tone="slate">{product.category}</Badge>
           <Badge tone="coral">{product.origin_country}</Badge>
+          {product.source_url && (
+            <a href={product.source_url} target="_blank" rel="noreferrer">
+              <Badge tone="green">real source</Badge>
+            </a>
+          )}
         </div>
 
         {/* Name */}
@@ -305,6 +310,12 @@ export default function ProductPage({ params }: ProductPageProps) {
         <p className="mt-1.5 text-sm font-normal leading-6 text-stone-500">
           {product.description}
         </p>
+        {product.source_price && product.source_currency && (
+          <p className="mt-2 text-xs font-semibold text-stone-400">
+            Source price: {product.source_price} {product.source_currency}
+            {product.source_location ? ` · ${product.source_location}` : ""}
+          </p>
+        )}
 
         {/* Price comparison (inline) */}
         <div className="mt-3 flex items-center gap-3 rounded-xl bg-stone-50 px-4 py-3">
