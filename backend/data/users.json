@@ -1,0 +1,111 @@
+[
+  {
+    "id": "u001",
+    "name": "Aruzhan",
+    "city": "Almaty",
+    "age": 24,
+    "interests": [
+      "gaming",
+      "electronics",
+      "gadgets"
+    ],
+    "budget_usd": 120,
+    "sim_verified": true,
+    "currency_preference": "KZT",
+    "language": "ru"
+  },
+  {
+    "id": "u002",
+    "name": "Timur",
+    "city": "Astana",
+    "age": 31,
+    "interests": [
+      "sports",
+      "travel",
+      "electronics"
+    ],
+    "budget_usd": 220,
+    "sim_verified": true,
+    "currency_preference": "USD",
+    "language": "en"
+  },
+  {
+    "id": "u003",
+    "name": "Madi",
+    "city": "Shymkent",
+    "age": 27,
+    "interests": [
+      "fashion",
+      "beauty",
+      "budget"
+    ],
+    "budget_usd": 60,
+    "sim_verified": true,
+    "currency_preference": "KZT",
+    "language": "kz"
+  },
+  {
+    "id": "u004",
+    "name": "Dana",
+    "city": "Almaty",
+    "age": 36,
+    "interests": [
+      "home",
+      "food",
+      "beauty"
+    ],
+    "budget_usd": 90,
+    "sim_verified": true,
+    "currency_preference": "RUB",
+    "language": "ru"
+  },
+  {
+    "id": "u005",
+    "name": "Alex",
+    "city": "Other",
+    "age": 22,
+    "interests": [
+      "travel",
+      "sports",
+      "premium"
+    ],
+    "budget_usd": 500,
+    "sim_verified": true,
+    "currency_preference": "USD",
+    "language": "en"
+  },
+  {
+    "id": "ua44efcf0",
+    "name": "Aruzhan",
+    "city": "Almaty",
+    "age": 24,
+    "interests": [
+      "gaming",
+      "electronics",
+      "gadgets"
+    ],
+    "budget_usd": 120,
+    "sim_verified": true,
+    "currency_preference": "KZT",
+    "language": "ru"
+  },
+  {
+    "id": "u229aa79b",
+    "name": "Aruzhan",
+    "city": "Almaty",
+    "age": 24,
+    "interests": [
+      "gaming",
+      "electronics",
+      "gadgets",
+      "fashion",
+      "sports",
+      "beauty",
+      "home"
+    ],
+    "budget_usd": 120,
+    "sim_verified": true,
+    "currency_preference": "KZT",
+    "language": "ru"
+  }
+]

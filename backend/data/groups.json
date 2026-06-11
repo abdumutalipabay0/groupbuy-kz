@@ -1,0 +1,82 @@
+[
+  {
+    "id": "g001",
+    "product_id": "p001",
+    "current_members": 10,
+    "threshold": 10,
+    "price_current": 67.0,
+    "price_individual": 89.99,
+    "expires_at": "2026-06-12T18:00:00+06:00",
+    "status": "completed"
+  },
+  {
+    "id": "g002",
+    "product_id": "p004",
+    "current_members": 7,
+    "threshold": 10,
+    "price_current": 41.25,
+    "price_individual": 49.99,
+    "expires_at": "2026-06-13T12:30:00+06:00",
+    "status": "active"
+  },
+  {
+    "id": "g003",
+    "product_id": "p008",
+    "current_members": 8,
+    "threshold": 20,
+    "price_current": 16.55,
+    "price_individual": 18.99,
+    "expires_at": "2026-06-11T23:00:00+06:00",
+    "status": "active"
+  },
+  {
+    "id": "g004",
+    "product_id": "p014",
+    "current_members": 2,
+    "threshold": 8,
+    "price_current": 36.99,
+    "price_individual": 39.99,
+    "expires_at": "2026-06-14T09:00:00+06:00",
+    "status": "active"
+  },
+  {
+    "id": "g005",
+    "product_id": "p019",
+    "current_members": 8,
+    "threshold": 8,
+    "price_current": 129.0,
+    "price_individual": 169.99,
+    "expires_at": "2026-06-12T15:45:00+06:00",
+    "status": "completed"
+  },
+  {
+    "id": "g006",
+    "product_id": "p021",
+    "current_members": 10,
+    "threshold": 14,
+    "price_current": 13.56,
+    "price_individual": 17.5,
+    "expires_at": "2026-06-13T21:00:00+06:00",
+    "status": "active"
+  },
+  {
+    "id": "g007",
+    "product_id": "p022",
+    "current_members": 4,
+    "threshold": 5,
+    "price_current": 357.0,
+    "price_individual": 429.0,
+    "expires_at": "2026-06-12T10:00:00+06:00",
+    "status": "active"
+  },
+  {
+    "id": "g008",
+    "product_id": "p003",
+    "current_members": 12,
+    "threshold": 12,
+    "price_current": 22.9,
+    "price_individual": 34.5,
+    "expires_at": "2026-06-11T20:15:00+06:00",
+    "status": "completed"
+  }
+]
