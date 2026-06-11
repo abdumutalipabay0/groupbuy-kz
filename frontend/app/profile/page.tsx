@@ -20,7 +20,7 @@ import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { ProgressBar } from "@/components/ui/ProgressBar";
 import { DEMO_USER, useGroupBuyStore } from "@/lib/store";
-import { formatPrice } from "@/lib/utils";
+import { formatPrice, isGroupExpired } from "@/lib/utils";
 
 const LEADERBOARD = [
   { name: "Тимур А.", invites: 34, saved: 89500, city: "Алматы" },
@@ -60,9 +60,9 @@ function AnimatedNumber({ value, suffix = "" }: { value: number; suffix?: string
 export default function ProfilePage() {
   const user = useGroupBuyStore((s) => s.userProfile) ?? DEMO_USER;
   const activeGroups = useGroupBuyStore((s) => s.activeGroups);
-  const coins = 180 + activeGroups.length * 40;
+  const visibleGroups = activeGroups.filter((group) => group.status === "active" && !isGroupExpired(group));
+  const coins = 180 + visibleGroups.length * 40;
   const totalSaved = 18200;
-  const dealsJoined = 3 + activeGroups.length;
   const streakDays = 2;
   const inviteSent = 7;
 
@@ -229,11 +229,11 @@ export default function ProfilePage() {
       </section>
 
       {/* Active deals */}
-      {activeGroups.length > 0 && (
+      {visibleGroups.length > 0 && (
         <section className="mx-4 mt-3 rounded-xl border border-red-100 bg-white p-4 shadow-sm">
           <p className="text-sm font-black text-ink">Мои активные команды</p>
           <div className="mt-3 space-y-2">
-            {activeGroups.slice(0, 4).map((g) => (
+            {visibleGroups.slice(0, 4).map((g) => (
               <div key={g.id} className="flex items-center justify-between rounded-lg bg-red-50 px-3 py-2">
                 <div>
                   <p className="text-xs font-black text-ink">Группа #{g.id}</p>

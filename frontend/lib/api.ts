@@ -19,9 +19,17 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
       ...(init?.headers ?? {})
     }
   });
-  const body = (await response.json()) as ApiResponse<T>;
+  let body: ApiResponse<T> | null = null;
+  try {
+    body = (await response.json()) as ApiResponse<T>;
+  } catch {
+    if (!response.ok) {
+      throw new Error(response.statusText || "Request failed");
+    }
+    throw new Error("Invalid API response");
+  }
   if (!response.ok || !body.success || body.data === null) {
-    throw new Error(body.message || "Request failed");
+    throw new Error(body.message || response.statusText || "Request failed");
   }
   return body.data;
 }

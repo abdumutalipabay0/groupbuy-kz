@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException, Query
 
 from models.schemas import ApiResponse, Product, ProductDetail
 from routers.repository import load_groups, load_products
+from services.group_status import with_effective_status
 
 
 router = APIRouter(prefix="/products", tags=["products"])
@@ -28,5 +29,12 @@ def get_product(product_id: str) -> ApiResponse[ProductDetail]:
     product = next((item for item in load_products() if item.id == product_id), None)
     if product is None:
         raise HTTPException(status_code=404, detail="Product not found")
-    group = next((item for item in load_groups() if item.product_id == product_id and item.status == "active"), None)
+    group = None
+    for item in load_groups():
+        if item.product_id != product_id:
+            continue
+        effective_group = with_effective_status(item)
+        if effective_group.status == "active":
+            group = effective_group
+            break
     return ApiResponse(data=ProductDetail(product=product, group=group), success=True, message="Product loaded")

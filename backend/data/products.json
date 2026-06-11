@@ -5,11 +5,16 @@
     "description": "Large AMOLED smartwatch with Bluetooth calling, long battery life, and fitness tracking.",
     "marketplace": "AliExpress",
     "category": "Electronics",
-    "tags": ["electronics", "gadgets", "sports", "budget"],
+    "tags": [
+      "electronics",
+      "gadgets",
+      "sports",
+      "budget"
+    ],
     "price_individual": 89.99,
     "price_group_min": 67.0,
     "group_threshold": 10,
-    "image_url": "https://picsum.photos/seed/redmi-watch/800/800",
+    "image_url": "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&h=600&fit=crop&q=80",
     "rating": 4.7,
     "origin_country": "China"
   },
@@ -19,11 +24,16 @@
     "description": "Wireless noise-cancelling headphones with app EQ and 40-hour playback.",
     "marketplace": "Amazon",
     "category": "Electronics",
-    "tags": ["electronics", "music", "travel", "premium"],
+    "tags": [
+      "electronics",
+      "music",
+      "travel",
+      "premium"
+    ],
     "price_individual": 79.99,
     "price_group_min": 58.99,
     "group_threshold": 8,
-    "image_url": "https://picsum.photos/seed/soundcore-q30/800/800",
+    "image_url": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&h=600&fit=crop&q=80",
     "rating": 4.6,
     "origin_country": "USA"
   },
@@ -33,11 +43,16 @@
     "description": "Compact multi-port charger for laptops, tablets, and phones.",
     "marketplace": "AliExpress",
     "category": "Electronics",
-    "tags": ["electronics", "gadgets", "travel", "budget"],
+    "tags": [
+      "electronics",
+      "gadgets",
+      "travel",
+      "budget"
+    ],
     "price_individual": 34.5,
     "price_group_min": 22.9,
     "group_threshold": 12,
-    "image_url": "https://picsum.photos/seed/baseus-gan/800/800",
+    "image_url": "https://images.unsplash.com/photo-1588872657578-7eaaa39bd5e?w=600&h=600&fit=crop&q=80",
     "rating": 4.8,
     "origin_country": "China"
   },
@@ -47,11 +62,15 @@
     "description": "Lightweight wireless gaming mouse with HERO sensor.",
     "marketplace": "Amazon",
     "category": "Electronics",
-    "tags": ["gaming", "electronics", "gadgets"],
+    "tags": [
+      "gaming",
+      "electronics",
+      "gadgets"
+    ],
     "price_individual": 49.99,
     "price_group_min": 37.5,
     "group_threshold": 10,
-    "image_url": "https://picsum.photos/seed/g305/800/800",
+    "image_url": "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=600&h=600&fit=crop&q=80",
     "rating": 4.7,
     "origin_country": "USA"
   },
@@ -61,11 +80,15 @@
     "description": "Low-profile wireless mechanical keyboard for work and gaming setups.",
     "marketplace": "Amazon",
     "category": "Electronics",
-    "tags": ["gaming", "electronics", "premium"],
+    "tags": [
+      "gaming",
+      "electronics",
+      "premium"
+    ],
     "price_individual": 104.0,
     "price_group_min": 82.0,
     "group_threshold": 6,
-    "image_url": "https://picsum.photos/seed/keychron-k3/800/800",
+    "image_url": "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=600&h=600&fit=crop&q=80",
     "rating": 4.5,
     "origin_country": "China"
   },
@@ -75,11 +98,15 @@
     "description": "Portable hub with HDMI, card reader, USB-A, and power delivery.",
     "marketplace": "AliExpress",
     "category": "Electronics",
-    "tags": ["electronics", "travel", "gadgets"],
+    "tags": [
+      "electronics",
+      "travel",
+      "gadgets"
+    ],
     "price_individual": 42.0,
     "price_group_min": 29.5,
     "group_threshold": 9,
-    "image_url": "https://picsum.photos/seed/ugreen-hub/800/800",
+    "image_url": "https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&h=600&fit=crop&q=80",
     "rating": 4.6,
     "origin_country": "China"
   },
@@ -89,11 +116,15 @@
     "description": "Breathable everyday basics in a neutral three-pack.",
     "marketplace": "Taobao",
     "category": "Fashion",
-    "tags": ["fashion", "budget", "travel"],
+    "tags": [
+      "fashion",
+      "budget",
+      "travel"
+    ],
     "price_individual": 29.99,
     "price_group_min": 20.0,
     "group_threshold": 15,
-    "image_url": "https://picsum.photos/seed/airism-shirts/800/800",
+    "image_url": "https://images.unsplash.com/photo-1620799139-074d3076d700?w=600&h=600&fit=crop&q=80",
     "rating": 4.4,
     "origin_country": "Japan"
   },
@@ -103,11 +134,15 @@
     "description": "Six-pack training socks with arch support and sweat-wicking yarn.",
     "marketplace": "Wildberries",
     "category": "Fashion",
-    "tags": ["fashion", "sports", "budget"],
+    "tags": [
+      "fashion",
+      "sports",
+      "budget"
+    ],
     "price_individual": 18.99,
     "price_group_min": 12.9,
     "group_threshold": 20,
-    "image_url": "https://picsum.photos/seed/nike-socks/800/800",
+    "image_url": "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&h=600&fit=crop&q=80",
     "rating": 4.5,
     "origin_country": "Vietnam"
   },
@@ -117,11 +152,15 @@
     "description": "Soft fleece hoodie with minimal branding and relaxed fit.",
     "marketplace": "Wildberries",
     "category": "Fashion",
-    "tags": ["fashion", "sports", "premium"],
+    "tags": [
+      "fashion",
+      "sports",
+      "premium"
+    ],
     "price_individual": 59.0,
     "price_group_min": 43.5,
     "group_threshold": 8,
-    "image_url": "https://picsum.photos/seed/adidas-hoodie/800/800",
+    "image_url": "https://images.unsplash.com/photo-1556821840-3a63f8a79e98?w=600&h=600&fit=crop&q=80",
     "rating": 4.6,
     "origin_country": "Cambodia"
   },
@@ -131,11 +170,15 @@
     "description": "Compact daily bag with multiple pockets and water-resistant finish.",
     "marketplace": "Taobao",
     "category": "Fashion",
-    "tags": ["fashion", "travel", "budget"],
+    "tags": [
+      "fashion",
+      "travel",
+      "budget"
+    ],
     "price_individual": 24.0,
     "price_group_min": 16.2,
     "group_threshold": 12,
-    "image_url": "https://picsum.photos/seed/crossbody-bag/800/800",
+    "image_url": "https://images.unsplash.com/photo-1548036161-26f4bfe3c37e?w=600&h=600&fit=crop&q=80",
     "rating": 4.3,
     "origin_country": "China"
   },
@@ -145,11 +188,15 @@
     "description": "Lightweight clogs with ventilation ports and customizable charm holes.",
     "marketplace": "Amazon",
     "category": "Fashion",
-    "tags": ["fashion", "travel", "home"],
+    "tags": [
+      "fashion",
+      "travel",
+      "home"
+    ],
     "price_individual": 49.95,
     "price_group_min": 35.0,
     "group_threshold": 10,
-    "image_url": "https://picsum.photos/seed/crocs-classic/800/800",
+    "image_url": "https://images.unsplash.com/photo-1511499767868-f384c90f2944?w=600&h=600&fit=crop&q=80",
     "rating": 4.8,
     "origin_country": "Vietnam"
   },
@@ -159,11 +206,15 @@
     "description": "Clear modular drawer for cosmetics, desk gear, or accessories.",
     "marketplace": "Taobao",
     "category": "Home",
-    "tags": ["home", "beauty", "budget"],
+    "tags": [
+      "home",
+      "beauty",
+      "budget"
+    ],
     "price_individual": 21.5,
     "price_group_min": 14.0,
     "group_threshold": 10,
-    "image_url": "https://picsum.photos/seed/acrylic-drawer/800/800",
+    "image_url": "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&h=600&fit=crop&q=80",
     "rating": 4.4,
     "origin_country": "China"
   },
@@ -173,11 +224,15 @@
     "description": "Smart LED bulb with app control and voice assistant compatibility.",
     "marketplace": "Amazon",
     "category": "Home",
-    "tags": ["home", "electronics", "gadgets"],
+    "tags": [
+      "home",
+      "electronics",
+      "gadgets"
+    ],
     "price_individual": 15.99,
     "price_group_min": 10.5,
     "group_threshold": 16,
-    "image_url": "https://picsum.photos/seed/hue-bulb/800/800",
+    "image_url": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&h=600&fit=crop&q=80",
     "rating": 4.6,
     "origin_country": "Netherlands"
   },
@@ -187,11 +242,15 @@
     "description": "Three-tier rolling cart for kitchens, studios, and dorm rooms.",
     "marketplace": "Wildberries",
     "category": "Home",
-    "tags": ["home", "budget", "food"],
+    "tags": [
+      "home",
+      "budget",
+      "food"
+    ],
     "price_individual": 39.99,
     "price_group_min": 27.99,
     "group_threshold": 8,
-    "image_url": "https://picsum.photos/seed/raskog-cart/800/800",
+    "image_url": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&h=600&fit=crop&q=80",
     "rating": 4.7,
     "origin_country": "Poland"
   },
@@ -201,11 +260,15 @@
     "description": "Compact garment steamer for travel and quick wrinkle removal.",
     "marketplace": "AliExpress",
     "category": "Home",
-    "tags": ["home", "travel", "fashion"],
+    "tags": [
+      "home",
+      "travel",
+      "fashion"
+    ],
     "price_individual": 36.0,
     "price_group_min": 25.0,
     "group_threshold": 10,
-    "image_url": "https://picsum.photos/seed/mijia-steamer/800/800",
+    "image_url": "https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=600&h=600&fit=crop&q=80",
     "rating": 4.5,
     "origin_country": "China"
   },
@@ -215,11 +278,15 @@
     "description": "Insulated tumbler with handle, straw, and car cup holder fit.",
     "marketplace": "Amazon",
     "category": "Home",
-    "tags": ["home", "sports", "travel"],
+    "tags": [
+      "home",
+      "sports",
+      "travel"
+    ],
     "price_individual": 45.0,
     "price_group_min": 32.0,
     "group_threshold": 12,
-    "image_url": "https://picsum.photos/seed/stanley-tumbler/800/800",
+    "image_url": "https://images.unsplash.com/photo-1614488080349-dfe2a08d16a5?w=600&h=600&fit=crop&q=80",
     "rating": 4.7,
     "origin_country": "USA"
   },
@@ -229,11 +296,15 @@
     "description": "Grip-focused 8mm yoga mat for home training and studio classes.",
     "marketplace": "Wildberries",
     "category": "Sports",
-    "tags": ["sports", "home", "budget"],
+    "tags": [
+      "sports",
+      "home",
+      "budget"
+    ],
     "price_individual": 19.99,
     "price_group_min": 13.5,
     "group_threshold": 15,
-    "image_url": "https://picsum.photos/seed/yoga-mat/800/800",
+    "image_url": "https://images.unsplash.com/photo-1518611012118-696072aa579a?w=600&h=600&fit=crop&q=80",
     "rating": 4.4,
     "origin_country": "France"
   },
@@ -243,11 +314,15 @@
     "description": "Portable percussive therapy device for recovery and warmups.",
     "marketplace": "Amazon",
     "category": "Sports",
-    "tags": ["sports", "premium", "travel"],
+    "tags": [
+      "sports",
+      "premium",
+      "travel"
+    ],
     "price_individual": 199.0,
     "price_group_min": 154.0,
     "group_threshold": 6,
-    "image_url": "https://picsum.photos/seed/theragun-mini/800/800",
+    "image_url": "https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=600&h=600&fit=crop&q=80",
     "rating": 4.6,
     "origin_country": "USA"
   },
@@ -257,11 +332,15 @@
     "description": "GPS running watch with training suggestions and wellness tracking.",
     "marketplace": "Amazon",
     "category": "Sports",
-    "tags": ["sports", "electronics", "premium"],
+    "tags": [
+      "sports",
+      "electronics",
+      "premium"
+    ],
     "price_individual": 169.99,
     "price_group_min": 129.0,
     "group_threshold": 8,
-    "image_url": "https://picsum.photos/seed/forerunner-55/800/800",
+    "image_url": "https://images.unsplash.com/photo-1571731188047-6f443b439a4e?w=600&h=600&fit=crop&q=80",
     "rating": 4.7,
     "origin_country": "Taiwan"
   },
@@ -271,11 +350,15 @@
     "description": "Door-anchor suspension training kit for full-body workouts.",
     "marketplace": "AliExpress",
     "category": "Sports",
-    "tags": ["sports", "home", "premium"],
+    "tags": [
+      "sports",
+      "home",
+      "premium"
+    ],
     "price_individual": 129.95,
     "price_group_min": 89.0,
     "group_threshold": 7,
-    "image_url": "https://picsum.photos/seed/trx-go/800/800",
+    "image_url": "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=600&h=600&fit=crop&q=80",
     "rating": 4.5,
     "origin_country": "USA"
   },
@@ -285,11 +368,15 @@
     "description": "Hydrating Korean essence for smoother, calmer skin.",
     "marketplace": "Amazon",
     "category": "Beauty",
-    "tags": ["beauty", "budget", "premium"],
+    "tags": [
+      "beauty",
+      "budget",
+      "premium"
+    ],
     "price_individual": 17.5,
     "price_group_min": 11.99,
     "group_threshold": 14,
-    "image_url": "https://picsum.photos/seed/cosrx-essence/800/800",
+    "image_url": "https://images.unsplash.com/photo-1556228578-626a7c5bf3c9?w=600&h=600&fit=crop&q=80",
     "rating": 4.7,
     "origin_country": "South Korea"
   },
@@ -299,11 +386,15 @@
     "description": "Fast-drying premium hair dryer with magnetic styling attachments.",
     "marketplace": "Amazon",
     "category": "Beauty",
-    "tags": ["beauty", "premium", "electronics"],
+    "tags": [
+      "beauty",
+      "premium",
+      "electronics"
+    ],
     "price_individual": 429.0,
     "price_group_min": 339.0,
     "group_threshold": 5,
-    "image_url": "https://picsum.photos/seed/dyson-dryer/800/800",
+    "image_url": "https://images.unsplash.com/photo-1522337360826-b0b0fcb42e79?w=600&h=600&fit=crop&q=80",
     "rating": 4.8,
     "origin_country": "Malaysia"
   },
@@ -313,11 +404,14 @@
     "description": "Daily serum for visible shine control and skin texture support.",
     "marketplace": "Wildberries",
     "category": "Beauty",
-    "tags": ["beauty", "budget"],
+    "tags": [
+      "beauty",
+      "budget"
+    ],
     "price_individual": 8.9,
     "price_group_min": 5.6,
     "group_threshold": 20,
-    "image_url": "https://picsum.photos/seed/niacinamide/800/800",
+    "image_url": "https://images.unsplash.com/photo-1614167155925-47d0c346fd9e?w=600&h=600&fit=crop&q=80",
     "rating": 4.5,
     "origin_country": "Canada"
   },
@@ -327,11 +421,15 @@
     "description": "Overnight lip mask with berry scent and rich moisturizing texture.",
     "marketplace": "Taobao",
     "category": "Beauty",
-    "tags": ["beauty", "fashion", "budget"],
+    "tags": [
+      "beauty",
+      "fashion",
+      "budget"
+    ],
     "price_individual": 24.0,
     "price_group_min": 16.8,
     "group_threshold": 12,
-    "image_url": "https://picsum.photos/seed/laneige-mask/800/800",
+    "image_url": "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=600&h=600&fit=crop&q=80",
     "rating": 4.6,
     "origin_country": "South Korea"
   },
@@ -341,11 +439,15 @@
     "description": "Silicone facial cleansing device with app-guided routines.",
     "marketplace": "AliExpress",
     "category": "Beauty",
-    "tags": ["beauty", "electronics", "premium"],
+    "tags": [
+      "beauty",
+      "electronics",
+      "premium"
+    ],
     "price_individual": 159.0,
     "price_group_min": 118.0,
     "group_threshold": 7,
-    "image_url": "https://picsum.photos/seed/foreo-luna/800/800",
+    "image_url": "https://images.unsplash.com/photo-1583454122028-6c97b98eb4a5?w=600&h=600&fit=crop&q=80",
     "rating": 4.4,
     "origin_country": "Sweden"
   }

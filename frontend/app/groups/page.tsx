@@ -10,7 +10,7 @@ import { ProgressBar } from "@/components/ui/ProgressBar";
 import { ProductVisual } from "@/components/product/ProductVisual";
 import { api } from "@/lib/api";
 import { DEMO_USER, useGroupBuyStore } from "@/lib/store";
-import { formatPrice, savingsPct } from "@/lib/utils";
+import { formatPrice, isGroupExpired, savingsPct } from "@/lib/utils";
 import type { GroupDetail } from "@/types";
 
 type SortMode = "savings" | "time" | "category";
@@ -106,7 +106,18 @@ export default function GroupsPage() {
             const progress = (group.current_members / group.threshold) * 100;
             const pct = savingsPct(product.price_individual, group.price_current);
             const left = Math.max(group.threshold - group.current_members, 0);
-            const isHot = left <= 2 && group.status === "active";
+            const expired = isGroupExpired(group);
+            const isHot = left <= 2 && group.status === "active" && !expired;
+            const statusText = expired
+              ? "истекло"
+              : group.status === "completed"
+              ? "цена открыта"
+              : "собирается";
+            const actionText = expired
+              ? "истекло"
+              : left === 0
+              ? "можно брать"
+              : "позови друга";
 
             return (
               <Link key={group.id} href={`/product/${product.id}`} className="block">
@@ -116,8 +127,8 @@ export default function GroupsPage() {
                   }`}
                 >
                   <div className="relative h-24 w-24 overflow-hidden rounded-xl bg-stone-50 sm:h-[86px] sm:w-[86px]">
-                    <div className="absolute left-1 top-1 z-10 rounded-full bg-primary px-1.5 py-0.5 text-[10px] font-bold text-white">
-                      {left === 0 ? "готово" : `+${left}`}
+                    <div className={`absolute left-1 top-1 z-10 rounded-full px-1.5 py-0.5 text-[10px] font-bold text-white ${expired ? "bg-stone-500" : "bg-primary"}`}>
+                      {expired ? "истекло" : left === 0 ? "готово" : `+${left}`}
                     </div>
                     <ProductVisual product={product} size="thumb" className="h-full w-full" />
                   </div>
@@ -127,8 +138,8 @@ export default function GroupsPage() {
                       <h2 className="line-clamp-1 text-base font-bold text-stone-800">
                         {product.name}
                       </h2>
-                      <Badge tone={group.status === "completed" ? "green" : "coral"}>
-                        {group.status === "completed" ? "цена открыта" : "собирается"}
+                      <Badge tone={group.status === "completed" ? "green" : expired ? "slate" : "coral"}>
+                        {statusText}
                       </Badge>
                       <Badge>{product.category}</Badge>
                       {isHot && (
@@ -144,11 +155,11 @@ export default function GroupsPage() {
                         {group.current_members}/{group.threshold}
                       </span>
                       <span className="inline-flex items-center gap-1">
-                        ⏱ <CountdownTimer expiresAt={group.expires_at} />
+                        ⏱ {expired ? "истекло" : <CountdownTimer expiresAt={group.expires_at} />}
                       </span>
                       <span className="inline-flex items-center gap-1 text-primary">
                         <Send size={13} />
-                        {left === 0 ? "можно брать" : "позови друга"}
+                        {actionText}
                       </span>
                     </div>
                   </div>

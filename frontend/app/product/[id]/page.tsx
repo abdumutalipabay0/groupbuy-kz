@@ -11,7 +11,7 @@ import { Card } from "@/components/ui/Card";
 import { CountdownTimer } from "@/components/ui/CountdownTimer";
 import { DealSuccessModal } from "@/components/ui/DealSuccessModal";
 import { api } from "@/lib/api";
-import { calculateGroupPrice, cn, formatPrice, savingsPct } from "@/lib/utils";
+import { calculateGroupPrice, cn, formatPrice, isGroupExpired, isGroupJoinable, savingsPct } from "@/lib/utils";
 import { DEMO_USER, useGroupBuyStore } from "@/lib/store";
 import type { Currency, Group, Product, ProductDetail } from "@/types";
 
@@ -87,6 +87,7 @@ export default function ProductPage({ params }: ProductPageProps) {
   const [successOpen, setSuccessOpen] = useState(false);
   const [origin, setOrigin] = useState("");
   const [priceFlash, setPriceFlash] = useState(false);
+  const [simulating, setSimulating] = useState(false);
   const prevPriceRef = useRef(0);
   const viewingCount = useViewingCount(48);
 
@@ -139,6 +140,9 @@ export default function ProductPage({ params }: ProductPageProps) {
   const savings = product ? product.price_individual - displayPrice : 0;
   const avatarCount = group ? Math.min(group.current_members, AVATARS.length) : 4;
   const spotsLeft = group ? Math.max(group.threshold - group.current_members, 0) : 0;
+  const groupExpired = isGroupExpired(group);
+  const groupCompleted = group?.status === "completed" || spotsLeft === 0;
+  const canJoin = isGroupJoinable(group) && !joined;
   const inviteText =
     product && group
       ? `Я собираю команду на ${product.name}. Осталось ${spotsLeft} мест, цена ${formatPrice(displayPrice, user.currency_preference, locale)}.`
@@ -150,7 +154,7 @@ export default function ProductPage({ params }: ProductPageProps) {
     : "";
 
   async function joinGroup() {
-    if (!product || !group || joined) return;
+    if (!product || !group || !canJoin) return;
     const optimisticMembers = Math.min(group.current_members + 1, group.threshold);
     const optimisticPrice = calculateGroupPrice(product, optimisticMembers);
     const optimisticGroup: Group = {
@@ -180,6 +184,7 @@ export default function ProductPage({ params }: ProductPageProps) {
   }
 
   async function copyInvite() {
+    if (!group) return;
     try {
       await navigator.clipboard.writeText(`${inviteText} ${inviteUrl}`);
     } catch {
@@ -187,11 +192,14 @@ export default function ProductPage({ params }: ProductPageProps) {
     }
     setCopied(true);
     window.setTimeout(() => setCopied(false), 1600);
-    startFriendSimulation();
+    if (!simulating && isGroupJoinable(group)) {
+      startFriendSimulation();
+    }
   }
 
   function startFriendSimulation() {
-    if (!product || !group) return;
+    if (!product || !group || simulating || !isGroupJoinable(group)) return;
+    setSimulating(true);
     setLiveEvents(["📨 Ссылка ушла в Telegram"]);
     const missing = Math.max(group.threshold - group.current_members, 0);
     const friendNames = ["Айгерим", "Тимур", "Дана", "Мади", "Алекс"].slice(
@@ -205,7 +213,7 @@ export default function ProductPage({ params }: ProductPageProps) {
       window.setTimeout(() => {
         setLiveEvents((e) => [...e, `✅ ${friend} вступил в команду`]);
         setGroup((cur) => {
-          if (!cur) return cur;
+          if (!cur || !isGroupJoinable(cur)) return cur;
           const nm = Math.min(cur.current_members + 1, cur.threshold);
           const np = calculateGroupPrice(product, nm);
           setDisplayPrice(np);
@@ -223,6 +231,7 @@ export default function ProductPage({ params }: ProductPageProps) {
         });
       }, 1300 + idx * 900);
     });
+    window.setTimeout(() => setSimulating(false), 1600 + friendNames.length * 900);
   }
 
   const tags = useMemo(() => product?.tags.slice(0, 5) ?? [], [product]);
@@ -270,11 +279,16 @@ export default function ProductPage({ params }: ProductPageProps) {
       </header>
 
       {/* Large product image */}
-      <div className="relative aspect-square overflow-hidden bg-white">
+      <div className="relative aspect-square overflow-hidden bg-stone-100">
         <ProductVisual product={product} size="detail" className="h-full w-full" />
-        <span className="absolute right-3 top-3 rounded-full bg-black/50 px-3 py-1 text-xs font-semibold text-white backdrop-blur-sm">
-          {318 + product.id.charCodeAt(product.id.length - 1) * 7} купили
-        </span>
+        <div className="absolute inset-x-0 bottom-0 flex items-end justify-between bg-gradient-to-t from-black/40 to-transparent p-3">
+          <span className="inline-flex items-center gap-1 rounded-full bg-white/20 px-2.5 py-1 text-xs font-semibold text-white backdrop-blur-sm">
+            {product.marketplace}
+          </span>
+          <span className="rounded-full bg-black/40 px-2.5 py-1 text-xs font-semibold text-white backdrop-blur-sm">
+            {318 + product.id.charCodeAt(product.id.length - 1) * 7} купили
+          </span>
+        </div>
       </div>
 
       {/* Product info card */}
@@ -351,7 +365,7 @@ export default function ProductPage({ params }: ProductPageProps) {
             </p>
           </div>
           <Badge tone="coral" className="shrink-0 gap-1">
-            ⏱ {group?.expires_at ? <CountdownTimer expiresAt={group.expires_at} /> : "24:00"}
+            ⏱ {groupExpired ? "истекло" : group?.expires_at ? <CountdownTimer expiresAt={group.expires_at} /> : "24:00"}
           </Badge>
         </div>
 
@@ -375,9 +389,9 @@ export default function ProductPage({ params }: ProductPageProps) {
 
         {/* Join button */}
         <Button
-          className={cn("w-full", spotsLeft <= 2 && !joined ? "pulse-red" : "")}
+          className={cn("w-full", spotsLeft <= 2 && canJoin ? "pulse-red" : "")}
           data-testid="join-group"
-          disabled={!group || joined || group.status === "completed"}
+          disabled={!canJoin}
           icon={joined ? <Check size={18} /> : <Users size={18} />}
           onClick={joinGroup}
         >
@@ -385,6 +399,10 @@ export default function ProductPage({ params }: ProductPageProps) {
             ? "Нет активной команды"
             : joined
             ? `Ты в команде · скидка ${savingsPct(product.price_individual, displayPrice)}%`
+            : groupExpired
+            ? "Срок команды истёк"
+            : groupCompleted
+            ? "Цена уже открыта"
             : "Войти в команду"}
         </Button>
 
@@ -397,9 +415,10 @@ export default function ProductPage({ params }: ProductPageProps) {
                 variant="primary"
                 data-testid="copy-invite"
                 icon={<Send size={16} />}
+                disabled={simulating}
                 onClick={copyInvite}
               >
-                {copied ? "Скопировано ✓" : "Скопировать"}
+                {simulating ? "Друзья заходят..." : copied ? "Скопировано ✓" : "Скопировать"}
               </Button>
               <a
                 className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md bg-[#229ED9] px-3 py-2 text-sm font-black text-white"
@@ -449,21 +468,33 @@ export default function ProductPage({ params }: ProductPageProps) {
             data-testid="sticky-team-action"
             className={cn(
               "rounded-xl px-3 py-2 text-center text-white shadow-glow",
-              joined ? "bg-[#229ED9]" : "bg-primary disabled:bg-stone-300"
+              joined ? "bg-[#229ED9] disabled:bg-[#229ED9]/60" : "bg-primary disabled:bg-stone-300"
             )}
-            disabled={!group || group.status === "completed"}
+            disabled={!group || simulating || (!joined && !canJoin)}
             onClick={joined ? copyInvite : joinGroup}
           >
             <span className="block text-[11px] font-semibold">
-              {joined
+              {simulating
+                ? "команда реагирует"
+                : joined
                 ? "добей через Telegram"
+                : groupExpired
+                ? "команда истекла"
+                : groupCompleted
+                ? "цена открыта"
                 : spotsLeft <= 1
                 ? "последний рывок"
                 : "командой сейчас"}
             </span>
             <span className="block text-lg font-black">
-              {joined
+              {simulating
+                ? "Подожди..."
+                : joined
                 ? "Скопировать invite"
+                : groupExpired
+                ? "Истекло"
+                : groupCompleted
+                ? "Готово"
                 : formatPrice(displayPrice, user.currency_preference, locale)}
             </span>
           </button>

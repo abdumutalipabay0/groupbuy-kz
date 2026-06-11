@@ -9,8 +9,8 @@ import { Button } from "@/components/ui/Button";
 import { CountdownTimer } from "@/components/ui/CountdownTimer";
 import { DealSuccessModal } from "@/components/ui/DealSuccessModal";
 import { api } from "@/lib/api";
-import { DEMO_USER } from "@/lib/store";
-import { calculateGroupPrice, formatPrice, savingsPct } from "@/lib/utils";
+import { DEMO_USER, useGroupBuyStore } from "@/lib/store";
+import { calculateGroupPrice, formatPrice, isGroupExpired, isGroupJoinable, savingsPct } from "@/lib/utils";
 import type { Group, GroupDetail, Product } from "@/types";
 
 interface JoinPageProps {
@@ -22,6 +22,7 @@ interface JoinPageProps {
 const INVITE_EVENTS = ["Аружан уже в команде", "Ссылка пришла из Telegram", "Остался последний шаг"];
 
 export default function JoinPage({ params }: JoinPageProps) {
+  const user = useGroupBuyStore((state) => state.userProfile) ?? DEMO_USER;
   const [product, setProduct] = useState<Product | null>(null);
   const [group, setGroup] = useState<Group | null>(null);
   const [loading, setLoading] = useState(true);
@@ -53,7 +54,7 @@ export default function JoinPage({ params }: JoinPageProps) {
   }, [params.groupId]);
 
   async function joinFromInvite() {
-    if (!product || !group || joined) return;
+    if (!product || !group || joined || !isGroupJoinable(group)) return;
     const nextMembers = Math.min(group.current_members + 1, group.threshold);
     const nextPrice = calculateGroupPrice(product, nextMembers);
     const optimistic: Group = {
@@ -66,7 +67,7 @@ export default function JoinPage({ params }: JoinPageProps) {
     setJoined(true);
 
     try {
-      const response = await api.joinGroup(group.id, DEMO_USER.id);
+      const response = await api.joinGroup(group.id, user.id);
       setGroup(response.group);
       if (response.group.status === "completed") {
         window.setTimeout(() => setSuccessOpen(true), 550);
@@ -98,11 +99,20 @@ export default function JoinPage({ params }: JoinPageProps) {
     );
   }
 
-  const locale = DEMO_USER.currency_preference === "USD" ? "en-US" : "ru-KZ";
+  const locale = user.currency_preference === "USD" ? "en-US" : "ru-KZ";
   const left = Math.max(group.threshold - group.current_members, 0);
   const progress = (group.current_members / group.threshold) * 100;
   const finalPrice = group.price_current;
   const savings = product.price_individual - finalPrice;
+  const expired = isGroupExpired(group);
+  const joinDisabled = joined || !isGroupJoinable(group);
+  const joinText = joined
+    ? "Ты в команде"
+    : expired
+    ? "Срок команды истёк"
+    : group.status === "completed" || left === 0
+    ? "Цена уже открыта"
+    : "Войти и открыть цену";
 
   return (
     <div className="mx-auto min-h-screen max-w-md bg-appBg pb-24 text-ink shadow-2xl">
@@ -126,12 +136,12 @@ export default function JoinPage({ params }: JoinPageProps) {
           <div className="flex items-start justify-between gap-3">
             <div>
               <p className="text-xs font-black uppercase text-stone-500">Командная цена</p>
-              <p className="text-4xl font-black text-primary">{formatPrice(finalPrice, DEMO_USER.currency_preference, locale)}</p>
-              <p className="text-sm font-bold text-stone-400 line-through">одному {formatPrice(product.price_individual, DEMO_USER.currency_preference, locale)}</p>
+              <p className="text-4xl font-black text-primary">{formatPrice(finalPrice, user.currency_preference, locale)}</p>
+              <p className="text-sm font-bold text-stone-400 line-through">одному {formatPrice(product.price_individual, user.currency_preference, locale)}</p>
             </div>
             <div className="rounded-lg bg-coupon px-3 py-2 text-right text-xs font-black text-ink">
               экономия<br />
-              {formatPrice(savings, DEMO_USER.currency_preference, locale)}
+              {formatPrice(savings, user.currency_preference, locale)}
             </div>
           </div>
 
@@ -143,7 +153,7 @@ export default function JoinPage({ params }: JoinPageProps) {
                 {group.current_members}/{group.threshold}
               </span>
               <span className="inline-flex items-center gap-1 text-primary">
-                ⏱ <CountdownTimer expiresAt={group.expires_at} />
+                ⏱ {expired ? "истекло" : <CountdownTimer expiresAt={group.expires_at} />}
               </span>
             </div>
             <ProgressBar value={progress} className="mt-2" />
@@ -165,8 +175,8 @@ export default function JoinPage({ params }: JoinPageProps) {
       </section>
 
       <div className="fixed bottom-0 left-1/2 z-40 w-full max-w-md -translate-x-1/2 border-t border-red-100 bg-white p-3 shadow-2xl">
-        <Button className="w-full" data-testid="invite-join" icon={<Send size={18} />} disabled={joined || group.status === "completed"} onClick={joinFromInvite}>
-          {joined || group.status === "completed" ? "Ты открыл командную цену" : "Войти и открыть цену"}
+        <Button className="w-full" data-testid="invite-join" icon={<Send size={18} />} disabled={joinDisabled} onClick={joinFromInvite}>
+          {joinText}
         </Button>
       </div>
 
@@ -175,7 +185,7 @@ export default function JoinPage({ params }: JoinPageProps) {
         productName={product.name}
         finalPrice={group.price_current}
         savings={product.price_individual - group.price_current}
-        currency={DEMO_USER.currency_preference}
+        currency={user.currency_preference}
         onClose={() => setSuccessOpen(false)}
       />
     </div>

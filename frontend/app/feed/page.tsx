@@ -21,7 +21,7 @@ import { CountdownTimer } from "@/components/ui/CountdownTimer";
 import { Button } from "@/components/ui/Button";
 import { api } from "@/lib/api";
 import { DEMO_USER, useGroupBuyStore } from "@/lib/store";
-import { formatPrice, savingsPct } from "@/lib/utils";
+import { formatPrice, isGroupExpired, savingsPct } from "@/lib/utils";
 import type { Currency, Group, Product } from "@/types";
 
 const MARKETPLACES = ["Все", "AliExpress", "Amazon", "Taobao", "Wildberries"];
@@ -81,9 +81,10 @@ export default function FeedPage() {
           feed = await api.feed(DEMO_USER.id);
         }
         if (!ignore) {
+          const liveGroups = groupList.filter((group) => group.status === "active" && !isGroupExpired(group));
           setProducts(feed);
           setGroups(groupList);
-          setActiveGroups(groupList);
+          setActiveGroups(liveGroups);
         }
       } catch (err) {
         if (!ignore) setError(err instanceof Error ? err.message : "Could not load feed");
@@ -104,7 +105,7 @@ export default function FeedPage() {
 
   const hotGroups = useMemo(() => {
     return [...groups]
-      .filter((g) => g.status === "active")
+      .filter((g) => g.status === "active" && !isGroupExpired(g))
       .sort((a, b) => {
         const urgencyA = a.current_members / a.threshold;
         const urgencyB = b.current_members / b.threshold;

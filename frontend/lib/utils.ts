@@ -1,5 +1,5 @@
 import clsx, { type ClassValue } from "clsx";
-import type { Currency, Product } from "@/types";
+import type { Currency, Group, Product } from "@/types";
 
 const EXCHANGE_RATES: Record<Currency, number> = {
   USD: 1,
@@ -36,4 +36,21 @@ export function hoursLeft(isoDate: string): string {
   const hours = Math.floor(diffMs / 3_600_000);
   const minutes = Math.floor((diffMs % 3_600_000) / 60_000);
   return hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m`;
+}
+
+export function isGroupExpired(group: Group | null | undefined): boolean {
+  if (!group) return false;
+  if (group.status === "expired") return true;
+  if (group.status !== "active") return false;
+  const expiresAt = new Date(group.expires_at).getTime();
+  return Number.isFinite(expiresAt) && expiresAt <= Date.now();
+}
+
+export function isGroupJoinable(group: Group | null | undefined): group is Group {
+  return Boolean(
+    group &&
+      group.status === "active" &&
+      !isGroupExpired(group) &&
+      group.current_members < group.threshold
+  );
 }
