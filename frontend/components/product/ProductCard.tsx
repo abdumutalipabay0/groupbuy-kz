@@ -11,6 +11,15 @@ interface ProductCardProps {
   currency: Currency;
 }
 
+function successProb(group: Group | null | undefined): number {
+  if (!group) return 55;
+  if (group.status === "completed") return 100;
+  const ratio = group.current_members / group.threshold;
+  const msLeft = new Date(group.expires_at).getTime() - Date.now();
+  const timeFactor = Math.min(Math.max(msLeft / 3_600_000, 0) / 48, 1) * 15;
+  return Math.min(96, Math.round(ratio * 72 + timeFactor + 10));
+}
+
 export function ProductCard({ product, group = null, currency }: ProductCardProps) {
   const price =
     group?.price_current ??
@@ -25,6 +34,7 @@ export function ProductCard({ product, group = null, currency }: ProductCardProp
   const savingsPct = Math.round(
     ((product.price_individual - price) / product.price_individual) * 100
   );
+  const prob = successProb(group);
 
   return (
     <article className="flex h-full flex-col overflow-hidden rounded-2xl bg-white shadow-sm">
@@ -69,8 +79,10 @@ export function ProductCard({ product, group = null, currency }: ProductCardProp
           </span>
         </div>
 
-        {/* Source */}
-        <p className="mt-0.5 text-[10px] text-stone-400">via {product.marketplace}</p>
+        {/* AI success badge */}
+        <p className="mt-0.5 text-[10px] font-semibold text-emerald-600">
+          ✦ AI: {prob}% шанс закрытия
+        </p>
 
         {/* Progress bar */}
         <div className="mt-2">
@@ -83,7 +95,7 @@ export function ProductCard({ product, group = null, currency }: ProductCardProp
           className="mt-2 inline-flex h-9 w-full items-center justify-center gap-1.5 rounded-lg bg-primary text-sm font-black text-white transition hover:bg-red-600"
         >
           <Users size={14} />
-          {spotsLeft === 0 ? "Цена открыта" : "Вступить"}
+          {spotsLeft === 0 ? "Цена открыта" : "Войти в команду"}
         </Link>
       </div>
     </article>

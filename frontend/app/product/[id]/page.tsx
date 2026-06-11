@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Check, ChevronLeft, RefreshCw, Send, Users } from "lucide-react";
+import { Check, ChevronLeft, RefreshCw, Send, ShieldCheck, Truck, Users } from "lucide-react";
 import { GroupProgress } from "@/components/product/GroupProgress";
 import { ProductVisual } from "@/components/product/ProductVisual";
 import { Badge } from "@/components/ui/Badge";
@@ -16,6 +16,39 @@ import { DEMO_USER, useGroupBuyStore } from "@/lib/store";
 import type { Group, Product, ProductDetail } from "@/types";
 
 const AVATARS = ["AN", "TM", "DK", "AZ", "MR", "LK", "JS", "BK", "YA", "IV"];
+
+function PriceLadder({ product, currentMembers, currency }: { product: Product; currentMembers: number; currency: string }) {
+  const t = product.group_threshold;
+  const steps = [1, Math.ceil(t * 0.3), Math.ceil(t * 0.6), t];
+  const locale = currency === "USD" ? "en-US" : "ru-KZ";
+  return (
+    <div className="mt-3 overflow-hidden rounded-xl border border-stone-100 bg-stone-50">
+      <p className="px-3 pt-2.5 text-[11px] font-black uppercase tracking-wide text-stone-400">Лестница цен</p>
+      <div className="flex">
+        {steps.map((n, i) => {
+          const p = calculateGroupPrice(product, n);
+          const pct = Math.round((1 - p / product.price_individual) * 100);
+          const isCurrent = currentMembers >= n && (i === steps.length - 1 || currentMembers < steps[i + 1]);
+          const isReached = currentMembers >= n;
+          return (
+            <div key={n} className={`flex flex-1 flex-col items-center gap-0.5 px-1 py-2.5 ${isCurrent ? "bg-primary/10" : ""}`}>
+              <span className={`text-[10px] font-bold ${isReached ? "text-emerald-600" : "text-stone-400"}`}>
+                {n === t ? `${n}` : `${n}+`} чел
+              </span>
+              <span className={`text-sm font-black ${isCurrent ? "text-primary" : isReached ? "text-emerald-600" : "text-stone-500"}`}>
+                {new Intl.NumberFormat("ru-KZ", { style: "currency", currency: "KZT", maximumFractionDigits: 0 }).format(p * 450)}
+              </span>
+              <span className={`rounded px-1 text-[10px] font-black ${isReached ? "bg-emerald-100 text-emerald-700" : "bg-stone-200 text-stone-500"}`}>
+                -{pct}%
+              </span>
+              {isCurrent && <span className="mt-0.5 text-[9px] font-black text-primary">← вы</span>}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
 
 interface ProductPageProps {
   params: { id: string };
@@ -274,6 +307,26 @@ export default function ProductPage({ params }: ProductPageProps) {
               -{savingsPct(product.price_individual, displayPrice)}%
             </span>
           )}
+        </div>
+        <PriceLadder product={product} currentMembers={group?.current_members ?? 0} currency={user.currency_preference} />
+      </div>
+
+      {/* Trust panel */}
+      <div className="mx-4 mt-3 grid grid-cols-3 gap-2">
+        <div className="flex flex-col items-center gap-1 rounded-xl border border-stone-100 bg-white px-2 py-3 text-center shadow-sm">
+          <ShieldCheck size={18} className="text-emerald-500" />
+          <p className="text-[11px] font-black text-stone-700">{group ? Math.min(group.current_members, 8) : 4} SIM</p>
+          <p className="text-[10px] text-stone-400">верифицировано</p>
+        </div>
+        <div className="flex flex-col items-center gap-1 rounded-xl border border-stone-100 bg-white px-2 py-3 text-center shadow-sm">
+          <Truck size={18} className="text-blue-500" />
+          <p className="text-[11px] font-black text-stone-700">7–12 дней</p>
+          <p className="text-[10px] text-stone-400">в Алматы</p>
+        </div>
+        <div className="flex flex-col items-center gap-1 rounded-xl border border-stone-100 bg-white px-2 py-3 text-center shadow-sm">
+          <span className="text-lg">⭐</span>
+          <p className="text-[11px] font-black text-stone-700">{product.rating.toFixed(1)}/5</p>
+          <p className="text-[10px] text-stone-400">рейтинг</p>
         </div>
       </div>
 

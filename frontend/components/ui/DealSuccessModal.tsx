@@ -53,14 +53,24 @@ export function DealSuccessModal({ open, productName, finalPrice, savings, curre
               сэкономили {formatPrice(savings, currency, locale)}
             </p>
           </div>
-          <div className="mt-4 grid grid-cols-3 gap-2 text-center">
-            {["оплата hold", "группа ok", "доставка next"].map((item) => (
-              <div key={item} className="rounded-lg bg-red-50 px-2 py-3 text-xs font-black text-primary">
-                {item}
-              </div>
-            ))}
+          <div className="mt-4 space-y-2">
+            <p className="text-xs font-black uppercase tracking-wide text-stone-400">Способ оплаты</p>
+            <div className="grid grid-cols-3 gap-2">
+              {[
+                { label: "Kaspi Pay", color: "bg-[#FF6B00]", emoji: "🟠" },
+                { label: "Kaspi Red", color: "bg-[#E60012]", emoji: "🔴" },
+                { label: "Halyk", color: "bg-emerald-600", emoji: "🟢" },
+              ].map(({ label, color, emoji }) => (
+                <button key={label} className={`rounded-lg ${color} py-2.5 text-xs font-black text-white`}>
+                  {emoji} {label}
+                </button>
+              ))}
+            </div>
+            <p className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs font-semibold text-emerald-700">
+              🔒 Оплата списывается только после сбора команды. Защита покупателя.
+            </p>
           </div>
-          <div className="mt-4 grid grid-cols-2 gap-2">
+          <div className="mt-3 grid grid-cols-2 gap-2">
             {shareUrl && (
               <a
                 className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md bg-[#229ED9] px-3 py-2 text-sm font-black text-white"
