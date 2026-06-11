@@ -3,9 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Check, ChevronLeft, RefreshCw, Send, Users } from "lucide-react";
-import { SimBadge } from "@/components/auth/SimBadge";
 import { GroupProgress } from "@/components/product/GroupProgress";
-import { PriceComparison } from "@/components/product/PriceComparison";
 import { ProductVisual } from "@/components/product/ProductVisual";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
@@ -61,7 +59,12 @@ export default function ProductPage({ params }: ProductPageProps) {
         if (!ignore) {
           setProduct(detail.product);
           setGroup(detail.group);
-          const p = detail.group?.price_current ?? calculateGroupPrice(detail.product, Math.ceil(detail.product.group_threshold * 0.5));
+          const p =
+            detail.group?.price_current ??
+            calculateGroupPrice(
+              detail.product,
+              Math.ceil(detail.product.group_threshold * 0.5)
+            );
           setDisplayPrice(p);
           prevPriceRef.current = p;
         }
@@ -72,10 +75,14 @@ export default function ProductPage({ params }: ProductPageProps) {
       }
     }
     load();
-    return () => { ignore = true; };
+    return () => {
+      ignore = true;
+    };
   }, [params.id]);
 
-  useEffect(() => { setOrigin(window.location.origin); }, []);
+  useEffect(() => {
+    setOrigin(window.location.origin);
+  }, []);
 
   // Flash animation when price drops
   useEffect(() => {
@@ -91,9 +98,10 @@ export default function ProductPage({ params }: ProductPageProps) {
   const savings = product ? product.price_individual - displayPrice : 0;
   const avatarCount = group ? Math.min(group.current_members, AVATARS.length) : 4;
   const spotsLeft = group ? Math.max(group.threshold - group.current_members, 0) : 0;
-  const inviteText = product && group
-    ? `Я собираю команду на ${product.name}. Осталось ${spotsLeft} мест, цена ${formatPrice(displayPrice, user.currency_preference, locale)}.`
-    : "";
+  const inviteText =
+    product && group
+      ? `Я собираю команду на ${product.name}. Осталось ${spotsLeft} мест, цена ${formatPrice(displayPrice, user.currency_preference, locale)}.`
+      : "";
   const inviteUrl = origin
     ? group
       ? `${origin}/join/${group.id}?ref=${user.id}`
@@ -130,7 +138,9 @@ export default function ProductPage({ params }: ProductPageProps) {
   async function copyInvite() {
     try {
       await navigator.clipboard.writeText(`${inviteText} ${inviteUrl}`);
-    } catch { /* embedded browsers may block */ }
+    } catch {
+      /* embedded browsers may block */
+    }
     setCopied(true);
     window.setTimeout(() => setCopied(false), 1600);
     startFriendSimulation();
@@ -140,7 +150,10 @@ export default function ProductPage({ params }: ProductPageProps) {
     if (!product || !group) return;
     setLiveEvents(["📨 Ссылка ушла в Telegram"]);
     const missing = Math.max(group.threshold - group.current_members, 0);
-    const friendNames = ["Айгерим", "Тимур", "Дана", "Мади", "Алекс"].slice(0, Math.max(missing, 1));
+    const friendNames = ["Айгерим", "Тимур", "Дана", "Мади", "Алекс"].slice(
+      0,
+      Math.max(missing, 1)
+    );
     friendNames.forEach((friend, idx) => {
       window.setTimeout(() => {
         setLiveEvents((e) => [...e, `👀 ${friend} перешёл по ссылке`]);
@@ -181,233 +194,213 @@ export default function ProductPage({ params }: ProductPageProps) {
   if (error || !product) {
     return (
       <div className="mx-auto max-w-3xl px-4 py-10">
-        <Link href="/feed" className="mb-4 inline-flex items-center gap-2 text-sm font-bold text-stone-600 hover:text-primary">
+        <Link
+          href="/feed"
+          className="mb-4 inline-flex items-center gap-2 text-sm font-bold text-stone-600 hover:text-primary"
+        >
           <ChevronLeft size={16} />
           Назад в ленту
         </Link>
-        <Card className="border-coral/30 bg-white text-primary">{error ?? "Товар не найден"}</Card>
+        <Card className="border-coral/30 bg-white text-primary">
+          {error ?? "Товар не найден"}
+        </Card>
       </div>
     );
   }
 
   return (
-    <div className="mx-auto w-full max-w-7xl pb-28">
-      <header className="sticky top-0 z-30 flex items-center justify-between gap-4 bg-white/95 px-4 py-3 shadow-sm backdrop-blur md:px-8">
-        <Link href="/feed" className="inline-flex items-center gap-2 text-sm font-black text-stone-700 hover:text-primary">
-          <ChevronLeft size={16} />
-          Лента
+    <div className="mx-auto w-full max-w-2xl pb-28">
+      {/* White header with back button */}
+      <header className="sticky top-0 z-30 flex items-center justify-between gap-4 bg-white px-4 py-3 shadow-sm">
+        <Link
+          href="/feed"
+          className="inline-flex items-center gap-1.5 text-sm font-semibold text-stone-700 hover:text-primary"
+        >
+          <ChevronLeft size={18} />
+          Назад
         </Link>
-        <div className="flex items-center gap-3">
-          <span className="inline-flex items-center gap-1.5 text-xs font-black text-stone-500">
-            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" />
-            {viewingCount} смотрят
-          </span>
-          <SimBadge />
-        </div>
+        <span className="inline-flex items-center gap-1.5 text-xs font-medium text-stone-400">
+          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" />
+          {viewingCount} смотрят
+        </span>
       </header>
 
-      <section className="grid gap-0 bg-white lg:grid-cols-[0.9fr_1.1fr]">
-        <div className="relative aspect-square overflow-hidden bg-red-50">
-          <div className="absolute left-3 top-3 z-10 flex flex-col gap-1">
-            <span className="rounded-full bg-primary px-3 py-1 text-xs font-black text-white shadow-lg">
-              Big sale drop
-            </span>
-            <span className="rounded-full bg-black/60 px-3 py-1 text-xs font-black text-white">
-              {318 + product.id.charCodeAt(product.id.length - 1) * 7} купили
-            </span>
-          </div>
-          <ProductVisual product={product} size="detail" className="h-full w-full" />
+      {/* Large product image */}
+      <div className="relative aspect-square overflow-hidden bg-white">
+        <ProductVisual product={product} size="detail" className="h-full w-full" />
+        <span className="absolute right-3 top-3 rounded-full bg-black/50 px-3 py-1 text-xs font-semibold text-white backdrop-blur-sm">
+          {318 + product.id.charCodeAt(product.id.length - 1) * 7} купили
+        </span>
+      </div>
+
+      {/* Product info card */}
+      <div className="mx-4 -mt-4 rounded-2xl bg-white p-4 shadow-md">
+        {/* Badges */}
+        <div className="flex flex-wrap gap-2">
+          <Badge tone="blue">{product.marketplace}</Badge>
+          <Badge tone="slate">{product.category}</Badge>
+          <Badge tone="coral">{product.origin_country}</Badge>
         </div>
 
-        <div className="space-y-4 p-4 md:p-6">
-          {/* Price banner */}
-          <div className="rounded-lg bg-gradient-to-r from-primary to-coral p-3 text-white">
-            <div className="flex items-center justify-between gap-3">
-              <div>
-                <p className="text-xs font-black uppercase text-white/80">Командная цена</p>
-                <p
-                  className={cn(
-                    "deal-pulse text-4xl font-black leading-none transition-all duration-500",
-                    priceFlash ? "price-drop-flash" : ""
-                  )}
-                  key={displayPrice}
-                >
-                  {formatPrice(displayPrice, user.currency_preference, locale)}
-                </p>
-              </div>
-              <div className="text-right">
-                <p className="text-xs font-bold text-white/80 line-through">
-                  {formatPrice(product.price_individual, user.currency_preference, locale)}
-                </p>
-                <p className="rounded bg-coupon px-2 py-1 text-sm font-black text-ink">
-                  экономия {formatPrice(savings, user.currency_preference, locale)}
-                </p>
-              </div>
-            </div>
-          </div>
+        {/* Name */}
+        <h1 className="mt-3 text-xl font-black leading-snug text-stone-900">{product.name}</h1>
+        <p className="mt-1.5 text-sm font-normal leading-6 text-stone-500">
+          {product.description}
+        </p>
 
+        {/* Price comparison (inline) */}
+        <div className="mt-3 flex items-center gap-3 rounded-xl bg-stone-50 px-4 py-3">
           <div>
-            <div className="flex flex-wrap gap-2">
-              <Badge tone="blue">{product.marketplace}</Badge>
-              <Badge tone="slate">{product.category}</Badge>
-              <Badge tone="coral">{product.origin_country}</Badge>
-            </div>
-            <h1 className="mt-3 text-2xl font-black leading-tight md:text-4xl">{product.name}</h1>
-            <p className="mt-2 text-sm font-medium leading-6 text-stone-600">{product.description}</p>
+            <p className="text-[11px] font-medium text-stone-400">Одному</p>
+            <p className="text-base font-semibold text-stone-400 line-through">
+              {formatPrice(product.price_individual, user.currency_preference, locale)}
+            </p>
           </div>
+          <div className="text-stone-300">→</div>
+          <div>
+            <p className="text-[11px] font-medium text-stone-500">Командой</p>
+            <p
+              className={cn(
+                "text-2xl font-black text-primary transition-all duration-500",
+                priceFlash ? "price-drop-flash" : ""
+              )}
+              key={displayPrice}
+            >
+              {formatPrice(displayPrice, user.currency_preference, locale)}
+            </p>
+          </div>
+          {savings > 0 && (
+            <span className="ml-auto rounded-lg bg-coupon px-2.5 py-1 text-sm font-black text-ink">
+              -{savingsPct(product.price_individual, displayPrice)}%
+            </span>
+          )}
+        </div>
+      </div>
 
-          <PriceComparison
-            individual={product.price_individual}
-            groupPrice={displayPrice}
-            currency={user.currency_preference}
-          />
+      {/* Team section */}
+      <section className="mx-4 mt-4 space-y-4 rounded-2xl border border-stone-100 bg-white p-4 shadow-sm">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <p className="text-base font-black text-stone-800">Групповая покупка</p>
+            <p className="mt-0.5 text-xs font-medium text-stone-500">
+              Когда команда набрана — все платят меньше
+            </p>
+          </div>
+          <Badge tone="coral" className="shrink-0 gap-1">
+            ⏱ {group?.expires_at ? <CountdownTimer expiresAt={group.expires_at} /> : "24:00"}
+          </Badge>
+        </div>
 
-          {/* Team section */}
-          <section className="space-y-4 rounded-lg border border-red-100 bg-red-50 p-4">
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <p className="text-sm font-black text-primary">Закрываем команду</p>
-                <p className="mt-1 text-xs font-bold text-stone-600">
-                  Когда команда набрана, всем открывается нижняя цена.
-                </p>
-              </div>
-              <Badge tone="coral" className="shrink-0 gap-1">
-                ⏱ {group?.expires_at ? <CountdownTimer expiresAt={group.expires_at} /> : "24:00"}
-              </Badge>
+        <GroupProgress product={product} group={group} />
+
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex -space-x-2">
+            {AVATARS.slice(0, avatarCount).map((av, idx) => (
+              <span
+                key={`${av}-${idx}`}
+                className="grid h-8 w-8 place-items-center rounded-full border-2 border-white bg-primary text-[11px] font-black text-white"
+              >
+                {av}
+              </span>
+            ))}
+          </div>
+          <p className="text-right text-xs font-semibold text-stone-500">
+            {spotsLeft === 0 ? "Команда готова!" : `Осталось ${spotsLeft} мест`}
+          </p>
+        </div>
+
+        {/* Join button */}
+        <Button
+          className={cn("w-full", spotsLeft <= 2 && !joined ? "pulse-red" : "")}
+          data-testid="join-group"
+          disabled={!group || joined || group.status === "completed"}
+          icon={joined ? <Check size={18} /> : <Users size={18} />}
+          onClick={joinGroup}
+        >
+          {!group
+            ? "Нет активной команды"
+            : joined
+            ? `Ты в команде · скидка ${savingsPct(product.price_individual, displayPrice)}%`
+            : "Войти в команду"}
+        </Button>
+
+        {/* Invite panel */}
+        {joined && (
+          <div className="animate-slide-in-up rounded-xl border border-yellow-300 bg-coupon p-3">
+            <p className="text-sm font-black text-ink">Добей сделку: отправь ссылку другу</p>
+            <div className="mt-2 grid grid-cols-2 gap-2">
+              <Button
+                variant="primary"
+                data-testid="copy-invite"
+                icon={<Send size={16} />}
+                onClick={copyInvite}
+              >
+                {copied ? "Скопировано ✓" : "Скопировать"}
+              </Button>
+              <a
+                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md bg-[#229ED9] px-3 py-2 text-sm font-black text-white"
+                href={`https://t.me/share/url?url=${encodeURIComponent(inviteUrl)}&text=${encodeURIComponent(inviteText)}`}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <Send size={16} />
+                Telegram
+              </a>
             </div>
-            <GroupProgress product={product} group={group} />
-            <div className="flex items-center justify-between gap-3">
-              <div className="flex -space-x-2">
-                {AVATARS.slice(0, avatarCount).map((av, idx) => (
-                  <span
-                    key={`${av}-${idx}`}
-                    className="grid h-9 w-9 place-items-center rounded-full border-2 border-white bg-primary text-xs font-black text-white"
+            {liveEvents.length > 0 && (
+              <div className="mt-3 space-y-1 rounded-lg bg-white/70 p-2">
+                {liveEvents.slice(-5).map((ev, idx) => (
+                  <p
+                    key={`${ev}-${idx}`}
+                    className="animate-slide-in-up text-xs font-semibold text-stone-700"
                   >
-                    {av}
-                  </span>
+                    {ev}
+                  </p>
                 ))}
               </div>
-              <p className="text-right text-xs font-black text-stone-600">
-                {spotsLeft === 0 ? "команда готова 🎉" : `осталось ${spotsLeft} мест`}
-              </p>
-            </div>
-
-            <Button
-              className={cn("w-full", spotsLeft <= 2 && !joined ? "pulse-red" : "")}
-              data-testid="join-group"
-              disabled={!group || joined || group.status === "completed"}
-              icon={joined ? <Check size={18} /> : <Users size={18} />}
-              onClick={joinGroup}
-            >
-              {!group
-                ? "Нет активной команды"
-                : joined
-                ? `Ты в команде · скидка ${savingsPct(product.price_individual, displayPrice)}%`
-                : "Войти в команду"}
-            </Button>
-
-            {joined && (
-              <div className="animate-slide-in-up rounded-lg border border-yellow-300 bg-coupon p-3">
-                <p className="text-sm font-black text-ink">Добей сделку: отправь ссылку другу</p>
-                <div className="mt-2 grid grid-cols-2 gap-2">
-                  <Button
-                    variant="primary"
-                    data-testid="copy-invite"
-                    icon={<Send size={16} />}
-                    onClick={copyInvite}
-                  >
-                    {copied ? "Скопировано ✓" : "Скопировать"}
-                  </Button>
-                  <a
-                    className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md bg-[#229ED9] px-3 py-2 text-sm font-black text-white"
-                    href={`https://t.me/share/url?url=${encodeURIComponent(inviteUrl)}&text=${encodeURIComponent(inviteText)}`}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    <Send size={16} />
-                    Telegram
-                  </a>
-                </div>
-                {liveEvents.length > 0 && (
-                  <div className="mt-3 space-y-1 rounded-lg bg-white/70 p-2">
-                    {liveEvents.slice(-5).map((ev, idx) => (
-                      <p key={`${ev}-${idx}`} className="animate-slide-in-up text-xs font-black text-stone-700">
-                        {ev}
-                      </p>
-                    ))}
-                  </div>
-                )}
-              </div>
             )}
-          </section>
-
-          {/* Nearby teams */}
-          <section className="grid gap-2 md:grid-cols-2">
-            {[0, 1].map((item) => (
-              <div key={item} className="rounded-lg border border-red-100 bg-white p-3">
-                <div className="flex items-center justify-between gap-2">
-                  <div className="flex -space-x-2">
-                    {AVATARS.slice(item * 2, item * 2 + 3).map((av) => (
-                      <span
-                        key={`${item}-${av}`}
-                        className="grid h-7 w-7 place-items-center rounded-full border-2 border-white bg-orange-500 text-[10px] font-black text-white"
-                      >
-                        {av}
-                      </span>
-                    ))}
-                  </div>
-                  <Badge tone={item === 0 ? "coral" : "slate"}>
-                    {item === 0 ? "почти готово" : "новая команда"}
-                  </Badge>
-                </div>
-                <p className="mt-2 text-sm font-black text-ink">
-                  {item === 0 ? "Нужно 1 приглашение" : "Можно стартовать с друзьями"}
-                </p>
-                <p className="text-xs font-bold text-stone-500">
-                  ⏱{" "}
-                  <CountdownTimer
-                    expiresAt={
-                      item === 0
-                        ? new Date(Date.now() + 18 * 60 * 1000).toISOString()
-                        : new Date(Date.now() + 3 * 60 * 60 * 1000 + 12 * 60 * 1000).toISOString()
-                    }
-                  />
-                </p>
-              </div>
-            ))}
-          </section>
-
-          <div className="flex flex-wrap gap-2">
-            {tags.map((tag) => (
-              <Badge key={tag}>{tag}</Badge>
-            ))}
           </div>
-        </div>
+        )}
       </section>
 
-      {/* Sticky bottom */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-red-100 bg-white p-3 shadow-2xl">
-        <div className="mx-auto grid max-w-3xl grid-cols-[0.85fr_1.15fr] gap-2">
-          <button className="rounded-md bg-stone-100 px-2 py-2 text-center">
-            <span className="block text-[11px] font-black text-stone-500">одному</span>
-            <span className="block text-sm font-black text-stone-500 line-through">
+      {/* Tags */}
+      {tags.length > 0 && (
+        <div className="mx-4 mt-4 flex flex-wrap gap-2">
+          {tags.map((tag) => (
+            <Badge key={tag}>{tag}</Badge>
+          ))}
+        </div>
+      )}
+
+      {/* Sticky bottom bar */}
+      <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-stone-200 bg-white p-3 shadow-2xl">
+        <div className="mx-auto grid max-w-2xl grid-cols-[0.85fr_1.15fr] gap-2">
+          <div className="rounded-xl bg-stone-50 px-3 py-2 text-center">
+            <span className="block text-[11px] font-medium text-stone-400">Одному</span>
+            <span className="block text-sm font-semibold text-stone-400 line-through">
               {formatPrice(product.price_individual, user.currency_preference, locale)}
             </span>
-          </button>
+          </div>
           <button
             data-testid="sticky-team-action"
             className={cn(
-              "rounded-md px-2 py-2 text-center text-white shadow-glow",
+              "rounded-xl px-3 py-2 text-center text-white shadow-glow",
               joined ? "bg-[#229ED9]" : "bg-primary disabled:bg-stone-300"
             )}
             disabled={!group || group.status === "completed"}
             onClick={joined ? copyInvite : joinGroup}
           >
-            <span className="block text-[11px] font-black">
-              {joined ? "добей через Telegram" : spotsLeft <= 1 ? "🔥 последний рывок" : "командой сейчас"}
+            <span className="block text-[11px] font-semibold">
+              {joined
+                ? "добей через Telegram"
+                : spotsLeft <= 1
+                ? "последний рывок"
+                : "командой сейчас"}
             </span>
             <span className="block text-lg font-black">
-              {joined ? "Скопировать invite" : formatPrice(displayPrice, user.currency_preference, locale)}
+              {joined
+                ? "Скопировать invite"
+                : formatPrice(displayPrice, user.currency_preference, locale)}
             </span>
           </button>
         </div>

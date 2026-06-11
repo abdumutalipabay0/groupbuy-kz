@@ -7,15 +7,15 @@ const config: Config = {
       colors: {
         navy: "#2B1210",
         panel: "#FFFFFF",
-        panelSoft: "#FFF0D9",
+        panelSoft: "#F8F8F8",
         primary: "#E60012",
         coral: "#FF5A1F",
         mint: "#12B981",
-        appBg: "#FFF5E8",
+        appBg: "#F5F5F5",
         pddRed: "#E60012",
         hotRed: "#FF2D1D",
         coupon: "#FFE15A",
-        ink: "#2B1210"
+        ink: "#111111"
       },
       fontFamily: {
         sans: ["Inter", "system-ui", "sans-serif"]

@@ -12,9 +12,9 @@
   {
     "id": "g002",
     "product_id": "p004",
-    "current_members": 7,
+    "current_members": 9,
     "threshold": 10,
-    "price_current": 41.25,
+    "price_current": 38.75,
     "price_individual": 49.99,
     "expires_at": "2026-06-13T12:30:00+06:00",
     "status": "active"

@@ -3,78 +3,68 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import {
-  CheckCircle2,
-  Coins,
-  Flame,
-  Gift,
-  Megaphone,
+  Bell,
+  Car,
+  Dumbbell,
+  Grid,
+  Home,
+  Laptop,
+  MapPin,
   RefreshCw,
   Search,
-  Share2,
-  SlidersHorizontal,
-  Trophy,
-  User,
-  Zap,
+  Shirt,
+  Sparkles,
+  Star,
 } from "lucide-react";
-import { SimBadge } from "@/components/auth/SimBadge";
-import { CountdownTimer } from "@/components/ui/CountdownTimer";
 import { ProductCard } from "@/components/product/ProductCard";
 import { Button } from "@/components/ui/Button";
 import { api } from "@/lib/api";
 import { DEMO_USER, useGroupBuyStore } from "@/lib/store";
-import { formatPrice } from "@/lib/utils";
 import type { Currency, Group, Product } from "@/types";
 
-const CATEGORIES = ["Все", "Electronics", "Fashion", "Home", "Sports", "Beauty"];
+const MARKETPLACES = ["Все", "AliExpress", "Amazon", "Taobao", "Wildberries"];
 
-const CATEGORY_LABELS: Record<string, string> = {
-  "Все": "Все",
-  Electronics: "Гаджеты",
-  Fashion: "Стиль",
-  Home: "Дом",
-  Sports: "Спорт",
-  Beauty: "Бьюти",
-};
-
-const COUPONS = [
-  { title: "-2 000 ₸ за друга", caption: "забрать до 23:59", reward: 80 },
-  { title: "Flash -40%", caption: "только сегодня", reward: 120 },
-  { title: "Монеты x3", caption: "за первый invite", reward: 60 },
-  { title: "Доставка free", caption: "после 2 шеров", reward: 40 },
+const CATEGORY_ICONS = [
+  { label: "Одежда", icon: Shirt },
+  { label: "Электроника", icon: Laptop },
+  { label: "Обувь", icon: Star },
+  { label: "Дом", icon: Home },
+  { label: "Спорт", icon: Dumbbell },
+  { label: "Красота", icon: Sparkles },
+  { label: "Авто", icon: Car },
+  { label: "Всё", icon: Grid },
 ];
 
-function useOnlineCount(base = 312) {
-  const [count, setCount] = useState(base);
-  useEffect(() => {
-    const id = setInterval(() => {
-      setCount((c) => c + Math.floor(Math.random() * 7) - 3);
-    }, 4000);
-    return () => clearInterval(id);
-  }, []);
-  return Math.max(count, 200);
-}
-
-// Flash sale ends at midnight tonight
-function todayMidnight() {
-  const d = new Date();
-  d.setHours(23, 59, 59, 0);
-  return d.toISOString();
-}
+const BANNERS = [
+  {
+    title: "AliExpress в один клик",
+    subtitle: "Групповые цены от -30%",
+    link: "/groups",
+    gradient: "from-blue-500 to-indigo-600",
+  },
+  {
+    title: "Amazon доставка в KZ",
+    subtitle: "Быстро и дёшево командой",
+    link: "/groups",
+    gradient: "from-orange-400 to-red-500",
+  },
+  {
+    title: "Taobao групповая цена",
+    subtitle: "Заказывай напрямую из Китая",
+    link: "/groups",
+    gradient: "from-purple-500 to-pink-500",
+  },
+];
 
 export default function FeedPage() {
   const user = useGroupBuyStore((state) => state.userProfile) ?? DEMO_USER;
   const setActiveGroups = useGroupBuyStore((state) => state.setActiveGroups);
   const [products, setProducts] = useState<Product[]>([]);
   const [groups, setGroups] = useState<Group[]>([]);
-  const [category, setCategory] = useState("Все");
-  const [budget, setBudget] = useState(1000);
+  const [marketplace, setMarketplace] = useState("Все");
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [claimedCoupons, setClaimedCoupons] = useState<string[]>([]);
-  const [coins, setCoins] = useState(180);
-  const [flashExpiry] = useState(todayMidnight);
-  const onlineCount = useOnlineCount();
 
   useEffect(() => {
     let ignore = false;
@@ -101,311 +91,167 @@ export default function FeedPage() {
       }
     }
     load();
-    return () => { ignore = true; };
+    return () => {
+      ignore = true;
+    };
   }, [setActiveGroups, user.id]);
 
   const groupByProduct = useMemo(
     () => new Map(groups.map((g) => [g.product_id, g])),
     [groups]
   );
-  const locale = user.currency_preference === "USD" ? "en-US" : "ru-KZ";
-  const currency = user.currency_preference as Currency;
-
-  const urgentGroups = groups
-    .filter((g) => g.status !== "expired")
-    .sort((a, b) => b.current_members / b.threshold - a.current_members / a.threshold)
-    .slice(0, 3);
 
   const filteredProducts = products.filter((p) => {
-    const catMatch = category === "Все" || p.category === category;
-    const budgetMatch = p.price_individual <= budget;
+    const marketplaceMatch =
+      marketplace === "Все" || p.marketplace === marketplace;
     const searchMatch =
       search.trim() === "" ||
       p.name.toLowerCase().includes(search.toLowerCase()) ||
       p.tags.some((t) => t.toLowerCase().includes(search.toLowerCase()));
-    return catMatch && budgetMatch && searchMatch;
+    return marketplaceMatch && searchMatch;
   });
 
-  const missionProgress = Math.min(100, 34 + claimedCoupons.length * 22);
-
-  function claimCoupon(coupon: (typeof COUPONS)[number]) {
-    if (claimedCoupons.includes(coupon.title)) return;
-    setClaimedCoupons((items) => [...items, coupon.title]);
-    setCoins((v) => v + coupon.reward);
-  }
-
   return (
-    <div className="mx-auto w-full max-w-7xl pb-24">
+    <div className="w-full bg-appBg pb-24">
       {/* Header */}
-      <header className="sticky top-0 z-30 bg-gradient-to-b from-primary to-hotRed px-4 pb-4 pt-3 text-white shadow-lg md:px-8">
-        <div className="flex items-center justify-between gap-3">
-          <div>
-            <p className="text-xs font-bold text-white/80">GroupBuy KZ</p>
-            <h1 className="text-2xl font-black leading-tight">Собери команду, сбей цену</h1>
-          </div>
+      <header className="sticky top-0 z-30 bg-white px-4 pb-3 pt-3 shadow-sm">
+        <div className="mx-auto max-w-md">
           <div className="flex items-center gap-2">
-            <span className="hidden items-center gap-1 rounded-full bg-white/20 px-3 py-1 text-xs font-black sm:inline-flex">
-              <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-400" />
-              {onlineCount} онлайн
-            </span>
-            <SimBadge />
-            <Link
-              className="rounded-md bg-white px-3 py-2 text-xs font-black text-primary"
-              href="/groups"
-            >
-              Команды
-            </Link>
-            <Link
-              className="grid h-9 w-9 place-items-center rounded-md bg-white/20 text-white"
-              href="/profile"
-            >
-              <User size={17} />
-            </Link>
+            <MapPin size={15} className="shrink-0 text-primary" />
+            <span className="text-xs font-semibold text-stone-500">Алматы</span>
+            <div className="ml-auto">
+              <button className="grid h-9 w-9 place-items-center rounded-full text-stone-500 hover:bg-stone-100">
+                <Bell size={20} />
+              </button>
+            </div>
           </div>
-        </div>
-
-        {/* Search */}
-        <div className="mt-3 flex items-center gap-2 rounded-full bg-white px-3 py-2 text-stone-500">
-          <Search size={17} className="shrink-0" />
-          <input
-            className="flex-1 bg-transparent text-sm font-semibold text-ink placeholder-stone-400 outline-none"
-            placeholder="найти товар, который добьют друзья"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-          {search && (
-            <button
-              className="text-xs font-black text-stone-400 hover:text-primary"
-              onClick={() => setSearch("")}
-            >
-              ✕
-            </button>
-          )}
-        </div>
-
-        {/* Flash sale */}
-        <div className="mt-2 flex items-center justify-between rounded-lg bg-white/15 px-3 py-1.5">
-          <div className="flex items-center gap-2">
-            <Zap size={15} className="text-coupon" />
-            <span className="text-xs font-black text-white">Flash Sale -40%</span>
+          <div className="mt-2 flex items-center gap-2 rounded-full bg-stone-100 px-3 py-2">
+            <Search size={16} className="shrink-0 text-stone-400" />
+            <input
+              className="flex-1 bg-transparent text-sm text-stone-800 placeholder-stone-400 outline-none"
+              placeholder="Поиск товаров и скидок"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+            {search && (
+              <button
+                className="text-xs text-stone-400 hover:text-primary"
+                onClick={() => setSearch("")}
+              >
+                ✕
+              </button>
+            )}
           </div>
-          <span className="text-xs font-black text-coupon">
-            <CountdownTimer expiresAt={flashExpiry} />
-          </span>
         </div>
       </header>
 
-      {/* Coupons */}
-      <section className="px-4 pt-4 md:px-8">
-        <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
-          {COUPONS.map((coupon, index) => {
-            const claimed = claimedCoupons.includes(coupon.title);
-            return (
+      <div className="mx-auto max-w-md">
+        {/* Banner slider */}
+        <section className="mt-3 overflow-x-auto px-4" style={{ scrollbarWidth: "none" }}>
+          <div className="flex snap-x snap-mandatory gap-3 pb-1">
+            {BANNERS.map((banner) => (
+              <div
+                key={banner.title}
+                className={`relative h-36 w-[72vw] max-w-xs shrink-0 snap-start overflow-hidden rounded-2xl bg-gradient-to-br ${banner.gradient} p-4 text-white`}
+              >
+                <p className="text-lg font-black leading-tight">{banner.title}</p>
+                <p className="mt-1 text-sm font-medium text-white/80">{banner.subtitle}</p>
+                <Link
+                  href={banner.link}
+                  className="mt-3 inline-block text-sm font-bold underline underline-offset-2"
+                >
+                  Смотреть →
+                </Link>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Category icons */}
+        <section className="mt-4 overflow-x-auto px-4" style={{ scrollbarWidth: "none" }}>
+          <div className="flex gap-3 pb-1">
+            {CATEGORY_ICONS.map(({ label, icon: Icon }) => (
               <button
-                key={coupon.title}
-                data-testid={`coupon-${index}`}
-                className={`rounded-lg border p-3 text-left text-ink shadow-sm transition active:scale-[0.99] ${
-                  claimed
-                    ? "border-emerald-200 bg-mint/15"
-                    : "border-yellow-300 bg-coupon hover:-translate-y-0.5"
-                }`}
-                onClick={() => claimCoupon(coupon)}
-                type="button"
+                key={label}
+                className="flex shrink-0 flex-col items-center gap-1.5"
               >
-                <div className="flex items-center gap-2">
-                  {claimed ? (
-                    <CheckCircle2 size={18} className="text-emerald-700" />
-                  ) : index === 0 ? (
-                    <Gift size={18} />
-                  ) : index === 1 ? (
-                    <Flame size={18} />
-                  ) : index === 2 ? (
-                    <Trophy size={18} />
-                  ) : (
-                    <Zap size={18} />
-                  )}
-                  <p className="text-sm font-black">{coupon.title}</p>
+                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white shadow-sm">
+                  <Icon size={24} className="text-stone-700" strokeWidth={1.7} />
                 </div>
-                <p className="mt-1 text-[11px] font-semibold text-stone-700">
-                  {claimed ? `+${coupon.reward} монет в кошельке` : coupon.caption}
-                </p>
+                <span className="text-[11px] font-semibold text-stone-600">{label}</span>
               </button>
-            );
-          })}
-        </div>
-      </section>
+            ))}
+          </div>
+        </section>
 
-      {/* Daily mission */}
-      <section className="mx-4 mt-4 grid gap-3 rounded-lg border border-red-100 bg-white p-3 shadow-sm md:mx-8 md:grid-cols-[1.1fr_0.9fr] md:items-center">
-        <div>
-          <div className="flex items-center justify-between gap-3">
-            <div>
-              <p className="text-xs font-black uppercase text-stone-500">Daily mission</p>
-              <h2 className="text-lg font-black text-ink">Собери 3 действия → скрытый купон</h2>
-            </div>
-            <div className="inline-flex shrink-0 items-center gap-1 rounded-full bg-coupon px-3 py-1 text-sm font-black text-ink">
-              <Coins size={17} />
-              <span key={coins} className="animate-count-up">{coins}</span>
-            </div>
-          </div>
-          <div className="mt-3 h-3 overflow-hidden rounded-full bg-red-100">
-            <div
-              className="h-full rounded-full bg-gradient-to-r from-primary to-coral transition-all duration-700"
-              style={{ width: `${missionProgress}%` }}
-            />
-          </div>
-          <div className="mt-2 flex items-center justify-between text-xs font-bold text-stone-500">
-            <span>{claimedCoupons.length}/3 выполнено</span>
-            <span>{missionProgress >= 100 ? "🎉 купон открыт!" : "добей прогресс"}</span>
-          </div>
-        </div>
-        <div className="grid grid-cols-3 gap-2 text-center">
-          {["зашёл", "забрал", "позвал"].map((item, index) => (
-            <div
-              key={item}
-              className={`rounded-md px-2 py-3 text-xs font-black transition ${
-                index <= claimedCoupons.length
-                  ? "animate-pop-in bg-red-50 text-primary"
-                  : "bg-stone-100 text-stone-500"
-              }`}
-            >
-              {index < claimedCoupons.length ? "✓ " : ""}{item}
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Hot teams */}
-      <section className="mx-4 mt-4 rounded-lg border border-red-100 bg-white p-3 shadow-sm md:mx-8">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 text-primary">
-            <Megaphone size={18} />
-            <p className="text-sm font-black">Горящие команды</p>
-          </div>
-          <Link href="/groups" className="text-xs font-black text-stone-500 hover:text-primary">
-            все →
-          </Link>
-        </div>
-        <div className="mt-3 grid gap-2 md:grid-cols-3">
-          {urgentGroups.map((group) => {
-            const product = products.find((p) => p.id === group.product_id);
-            if (!product) return null;
-            const left = Math.max(group.threshold - group.current_members, 0);
-            return (
-              <Link
-                key={group.id}
-                href={`/product/${product.id}`}
-                className="rounded-md bg-red-50 p-3 text-sm transition hover:bg-red-100"
+        {/* Marketplace filter */}
+        <section className="mt-4 overflow-x-auto px-4" style={{ scrollbarWidth: "none" }}>
+          <div className="flex gap-2 pb-1">
+            {MARKETPLACES.map((item) => (
+              <button
+                key={item}
+                className={`shrink-0 rounded-full border px-4 py-1.5 text-sm font-semibold transition ${
+                  marketplace === item
+                    ? "border-primary bg-primary text-white"
+                    : "border-stone-200 bg-white text-stone-600"
+                }`}
+                onClick={() => setMarketplace(item)}
               >
-                <div className="flex items-center justify-between gap-2">
-                  <span className="line-clamp-1 font-black text-ink">{product.name}</span>
-                  <span className="rounded-full bg-primary px-2 py-0.5 text-[11px] font-black text-white">
-                    {left === 0 ? "готово" : `+${left}`}
-                  </span>
-                </div>
-                <p className="mt-1 text-xs font-bold text-primary">
-                  {formatPrice(group.price_current, currency, locale)} командой
-                </p>
-                <p className="mt-1 text-[10px] font-bold text-stone-500">
-                  ⏱ <CountdownTimer expiresAt={group.expires_at} />
-                </p>
-              </Link>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* Filters */}
-      <section className="mt-4 flex flex-col gap-3 px-4 md:flex-row md:items-center md:justify-between md:px-8">
-        <div className="flex gap-2 overflow-x-auto pb-1">
-          {CATEGORIES.map((item) => (
-            <button
-              key={item}
-              className={`shrink-0 rounded-full px-4 py-2 text-sm font-black transition ${
-                category === item
-                  ? "bg-primary text-white shadow-glow"
-                  : "bg-white text-stone-700 shadow-sm"
-              }`}
-              onClick={() => setCategory(item)}
-            >
-              {CATEGORY_LABELS[item]}
-            </button>
-          ))}
-        </div>
-        <label className="flex min-w-56 items-center gap-3 rounded-full bg-white px-3 py-2 text-sm font-black text-stone-700 shadow-sm">
-          <SlidersHorizontal size={18} />
-          ${budget}
-          <input
-            className="w-full accent-primary"
-            type="range"
-            min={10}
-            max={1000}
-            step={10}
-            value={budget}
-            onChange={(e) => setBudget(Number(e.target.value))}
-          />
-        </label>
-      </section>
-
-      {/* Results count */}
-      {!loading && !error && search && (
-        <p className="px-4 pt-3 text-xs font-bold text-stone-500 md:px-8">
-          {filteredProducts.length > 0
-            ? `${filteredProducts.length} результат${filteredProducts.length === 1 ? "" : "а"} по «${search}»`
-            : `Ничего не найдено по «${search}»`}
-        </p>
-      )}
-
-      {/* Product grid */}
-      {loading ? (
-        <div className="grid min-h-80 place-items-center text-primary">
-          <RefreshCw className="animate-spin" />
-        </div>
-      ) : error ? (
-        <div className="mx-4 mt-5 rounded-lg border border-coral/30 bg-white p-4 font-bold text-primary md:mx-8">
-          {error}
-        </div>
-      ) : (
-        <div className="grid grid-cols-2 gap-2 px-4 pt-4 md:grid-cols-3 md:gap-3 md:px-8 lg:grid-cols-5">
-          {filteredProducts.map((product) => (
-            <ProductCard
-              key={product.id}
-              product={product}
-              group={groupByProduct.get(product.id)}
-              currency={user.currency_preference}
-            />
-          ))}
-        </div>
-      )}
-
-      {!loading && !error && filteredProducts.length === 0 && (
-        <div className="mt-10 text-center text-stone-600">
-          <p>{search ? `Ничего не найдено по «${search}»` : "Под этот бюджет сделок нет."}</p>
-          <Button
-            className="mt-4"
-            variant="secondary"
-            onClick={() => { setBudget(1000); setSearch(""); }}
-          >
-            Показать всё
-          </Button>
-        </div>
-      )}
-
-      {/* Mobile sticky */}
-      <div className="fixed bottom-0 left-0 right-0 z-30 border-t border-red-100 bg-white/95 px-4 py-2 backdrop-blur md:hidden">
-        <div className="mx-auto flex max-w-md items-center justify-between gap-3">
-          <div>
-            <p className="text-xs font-bold text-stone-500">
-              Daily mission · <span key={coins} className="animate-count-up">{coins}</span> монет
-            </p>
-            <p className="text-sm font-black text-ink">
-              {missionProgress >= 100 ? "🎉 Секретный купон открыт" : "Поделись сделкой = купон"}
-            </p>
+                {item}
+              </button>
+            ))}
           </div>
-          <Button className="min-h-10 px-3" icon={<Share2 size={16} />}>
-            Шер
-          </Button>
+        </section>
+
+        {/* Section header */}
+        <div className="mt-4 flex items-center justify-between px-4">
+          <h2 className="text-base font-black text-stone-800">Популярное сегодня</h2>
+          {!loading && !error && search && (
+            <span className="text-xs font-medium text-stone-500">
+              {filteredProducts.length} товаров
+            </span>
+          )}
         </div>
+
+        {/* Product grid */}
+        {loading ? (
+          <div className="grid min-h-80 place-items-center text-primary">
+            <RefreshCw className="animate-spin" />
+          </div>
+        ) : error ? (
+          <div className="mx-4 mt-5 rounded-xl border border-stone-200 bg-white p-4 font-medium text-primary">
+            {error}
+          </div>
+        ) : filteredProducts.length === 0 ? (
+          <div className="mt-10 px-4 text-center text-stone-500">
+            <p className="font-medium">
+              {search
+                ? `Ничего не найдено по «${search}»`
+                : "Нет товаров в этой категории."}
+            </p>
+            <Button
+              className="mt-4"
+              variant="secondary"
+              onClick={() => {
+                setMarketplace("Все");
+                setSearch("");
+              }}
+            >
+              Показать всё
+            </Button>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 gap-3 px-4 pt-3">
+            {filteredProducts.map((product) => (
+              <ProductCard
+                key={product.id}
+                product={product}
+                group={groupByProduct.get(product.id)}
+                currency={user.currency_preference as Currency}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
