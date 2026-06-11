@@ -37,27 +37,6 @@ const CATEGORY_ICONS = [
   { label: "Еда", category: "Food", icon: Apple },
 ];
 
-const BANNERS = [
-  {
-    title: "AliExpress в один клик",
-    subtitle: "Групповые цены от -30%",
-    link: "/groups",
-    gradient: "from-blue-500 to-indigo-600",
-  },
-  {
-    title: "Amazon доставка в KZ",
-    subtitle: "Быстро и дёшево командой",
-    link: "/groups",
-    gradient: "from-orange-400 to-red-500",
-  },
-  {
-    title: "Taobao групповая цена",
-    subtitle: "Заказывай напрямую из Китая",
-    link: "/groups",
-    gradient: "from-purple-500 to-pink-500",
-  },
-];
-
 export default function FeedPage() {
   const user = useGroupBuyStore((state) => state.userProfile) ?? DEMO_USER;
   const setActiveGroups = useGroupBuyStore((state) => state.setActiveGroups);
@@ -125,15 +104,18 @@ export default function FeedPage() {
       p.tags.some((t) => t.toLowerCase().includes(search.toLowerCase()));
     return marketplaceMatch && categoryMatch && searchMatch;
   });
+  const realCount = products.filter((product) => product.source_url).length;
 
   return (
-    <div className="w-full bg-appBg pb-24">
-      {/* Header */}
-      <header className="sticky top-0 z-30 bg-white px-4 pb-3 pt-3 shadow-sm">
+    <div className="w-full bg-[#f6f7f8] pb-24">
+      <header className="sticky top-0 z-30 border-b border-stone-200 bg-white/95 px-4 pb-3 pt-3 shadow-sm backdrop-blur">
         <div className="mx-auto max-w-md">
           <div className="flex items-center gap-2">
             <MapPin size={15} className="shrink-0 text-primary" />
-            <span className="text-xs font-semibold text-stone-500">{user.city}</span>
+            <span className="text-xs font-bold text-stone-500">{user.city}</span>
+            <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-black text-emerald-700">
+              {realCount} real items
+            </span>
             <div className="ml-auto">
               <button className="grid h-9 w-9 place-items-center rounded-full text-stone-500 hover:bg-stone-100">
                 <Bell size={20} />
@@ -161,49 +143,54 @@ export default function FeedPage() {
       </header>
 
       <div className="mx-auto max-w-md">
-        {/* Banner slider */}
-        <section className="mt-3 overflow-x-auto px-4" style={{ scrollbarWidth: "none" }}>
-          <div className="flex snap-x snap-mandatory gap-3 pb-1">
-            {BANNERS.map((banner) => (
-              <div
-                key={banner.title}
-                className={`relative h-36 w-[72vw] max-w-xs shrink-0 snap-start overflow-hidden rounded-2xl bg-gradient-to-br ${banner.gradient} p-4 text-white`}
-              >
-                <p className="text-lg font-black leading-tight">{banner.title}</p>
-                <p className="mt-1 text-sm font-medium text-white/80">{banner.subtitle}</p>
-                <Link
-                  href={banner.link}
-                  className="mt-3 inline-block text-sm font-bold underline underline-offset-2"
-                >
-                  Смотреть →
-                </Link>
+        <section className="mx-4 mt-3 rounded-xl border border-stone-200 bg-white p-4 shadow-sm">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <p className="text-[11px] font-black uppercase text-stone-400">GroupBuy KZ</p>
+              <h1 className="mt-1 text-2xl font-black leading-tight text-stone-950">Собери команду, сбей цену</h1>
+              <p className="mt-2 text-sm font-semibold leading-5 text-stone-500">
+                Реальный каталог + групповые цены. Зови друзей, пока таймер не сгорел.
+              </p>
+            </div>
+            <div className="rounded-lg bg-stone-950 px-3 py-2 text-right text-white">
+              <p className="text-xl font-black">{realCount}</p>
+              <p className="text-[10px] font-bold text-white/70">real</p>
+            </div>
+          </div>
+          <div className="mt-4 grid grid-cols-3 gap-2 text-center">
+            {[
+              ["до -35%", "скидка"],
+              ["SIM", "trust"],
+              ["Telegram", "invite"],
+            ].map(([value, label]) => (
+              <div key={label} className="rounded-lg bg-stone-50 px-2 py-2">
+                <p className="text-sm font-black text-stone-900">{value}</p>
+                <p className="text-[10px] font-bold text-stone-400">{label}</p>
               </div>
             ))}
           </div>
         </section>
 
-        {/* Category icons */}
         <section className="mt-4 overflow-x-auto px-4" style={{ scrollbarWidth: "none" }}>
-          <div className="flex gap-3 pb-1">
+          <div className="flex gap-2 pb-1">
             {CATEGORY_ICONS.map(({ label, category: cat, icon: Icon }) => {
               const active = cat === category;
               return (
                 <button
                   key={label}
-                  className="flex shrink-0 flex-col items-center gap-1.5"
+                  className={`inline-flex shrink-0 items-center gap-1.5 rounded-full border px-3 py-2 text-xs font-black transition ${
+                    active ? "border-stone-950 bg-stone-950 text-white" : "border-stone-200 bg-white text-stone-700"
+                  }`}
                   onClick={() => setCategory(active ? null : cat)}
                 >
-                  <div className={`flex h-14 w-14 items-center justify-center rounded-2xl shadow-sm transition ${active ? "bg-primary" : "bg-white"}`}>
-                    <Icon size={24} className={active ? "text-white" : "text-stone-700"} strokeWidth={1.7} />
-                  </div>
-                  <span className={`text-[11px] font-semibold ${active ? "text-primary" : "text-stone-600"}`}>{label}</span>
+                  <Icon size={15} strokeWidth={2} />
+                  {label}
                 </button>
               );
             })}
           </div>
         </section>
 
-        {/* Marketplace filter */}
         <section className="mt-4 overflow-x-auto px-4" style={{ scrollbarWidth: "none" }}>
           <div className="flex gap-2 pb-1">
             {MARKETPLACES.map((item) => (
@@ -222,7 +209,6 @@ export default function FeedPage() {
           </div>
         </section>
 
-        {/* Hot teams */}
         {!loading && hotGroups.length > 0 && (
           <section className="mt-5 px-4">
             <div className="mb-2.5 flex items-center gap-1.5">
@@ -267,10 +253,11 @@ export default function FeedPage() {
           </section>
         )}
 
-        {/* Section header */}
         <div className="mt-5 flex items-center justify-between px-4">
-          <h2 className="text-base font-black text-stone-800">Популярное сегодня</h2>
-          {!loading && !error && search && (
+          <h2 className="text-base font-black text-stone-900">
+            {category ? "Подборка категории" : "Популярное сегодня"}
+          </h2>
+          {!loading && !error && (
             <span className="text-xs font-medium text-stone-500">
               {filteredProducts.length} товаров
             </span>
@@ -306,7 +293,7 @@ export default function FeedPage() {
             </Button>
           </div>
         ) : (
-          <div className="grid grid-cols-2 gap-3 px-4 pt-3">
+          <div className="grid grid-cols-2 gap-2.5 px-4 pt-3">
             {filteredProducts.map((product) => (
               <ProductCard
                 key={product.id}

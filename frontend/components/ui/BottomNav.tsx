@@ -2,13 +2,11 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Grid2X2, Heart, ShoppingBag, ShoppingCart, User } from "lucide-react";
+import { Grid2X2, ShoppingBag, User } from "lucide-react";
 
 const TABS = [
   { label: "Главная", href: "/feed", icon: ShoppingBag, activeOn: ["/feed", "/product"] },
   { label: "Каталог", href: "/groups", icon: Grid2X2, activeOn: ["/groups"] },
-  { label: "Избранное", href: "/feed", icon: Heart, activeOn: [] },
-  { label: "Корзина", href: "/feed", icon: ShoppingCart, activeOn: [] },
   { label: "Профиль", href: "/profile", icon: User, activeOn: ["/profile"] },
 ];
 
@@ -21,15 +19,15 @@ export function BottomNav() {
   if (shouldHide) return null;
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-stone-200 bg-white">
-      <div className="mx-auto flex max-w-md items-center justify-around">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-stone-200 bg-white/95 backdrop-blur">
+      <div className="mx-auto grid max-w-md grid-cols-3">
         {TABS.map(({ label, href, icon: Icon, activeOn }) => {
           const isActive = activeOn.some((path) => pathname === path || pathname.startsWith(`${path}/`));
           return (
             <Link
               key={label}
               href={href}
-              className={`flex flex-col items-center gap-0.5 px-3 py-2 text-[10px] font-semibold transition-colors ${
+              className={`flex flex-col items-center gap-0.5 px-3 py-2.5 text-[10px] font-semibold transition-colors ${
                 isActive ? "text-primary" : "text-stone-400"
               }`}
             >

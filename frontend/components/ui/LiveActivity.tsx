@@ -77,7 +77,7 @@ export function LiveActivity() {
   if (toasts.length === 0) return null;
 
   return (
-    <div className="fixed bottom-20 left-3 z-50 flex flex-col gap-2 md:bottom-6" aria-live="polite">
+    <div className="pointer-events-none fixed bottom-6 left-3 z-50 hidden flex-col gap-2 md:flex" aria-live="polite">
       {toasts.map((toast) => {
         const Icon = ICONS[toast.kind];
         const color = COLORS[toast.kind];

@@ -141,7 +141,7 @@ export default function ProductPage({ params }: ProductPageProps) {
   const avatarCount = group ? Math.min(group.current_members, AVATARS.length) : 4;
   const spotsLeft = group ? Math.max(group.threshold - group.current_members, 0) : 0;
   const groupExpired = isGroupExpired(group);
-  const groupCompleted = group?.status === "completed" || spotsLeft === 0;
+  const groupCompleted = Boolean(group && (group.status === "completed" || spotsLeft === 0));
   const canJoin = isGroupJoinable(group) && !joined;
   const inviteText =
     product && group
@@ -262,9 +262,8 @@ export default function ProductPage({ params }: ProductPageProps) {
   }
 
   return (
-    <div className="mx-auto w-full max-w-2xl pb-28">
-      {/* White header with back button */}
-      <header className="sticky top-0 z-30 flex items-center justify-between gap-4 bg-white px-4 py-3 shadow-sm">
+    <div className="mx-auto w-full max-w-2xl pb-44">
+      <header className="sticky top-0 z-30 flex items-center justify-between gap-4 border-b border-stone-200 bg-white/95 px-4 py-3 shadow-sm backdrop-blur">
         <Link
           href="/feed"
           className="inline-flex items-center gap-1.5 text-sm font-semibold text-stone-700 hover:text-primary"
@@ -278,7 +277,6 @@ export default function ProductPage({ params }: ProductPageProps) {
         </span>
       </header>
 
-      {/* Large product image */}
       <div className="relative aspect-square overflow-hidden bg-stone-100">
         <ProductVisual product={product} size="detail" className="h-full w-full" />
         <div className="absolute inset-x-0 bottom-0 flex items-end justify-between bg-gradient-to-t from-black/40 to-transparent p-3">
@@ -291,9 +289,7 @@ export default function ProductPage({ params }: ProductPageProps) {
         </div>
       </div>
 
-      {/* Product info card */}
-      <div className="mx-4 -mt-4 rounded-2xl bg-white p-4 shadow-md">
-        {/* Badges */}
+      <div className="mx-4 -mt-4 rounded-xl border border-stone-200 bg-white p-4 shadow-md">
         <div className="flex flex-wrap gap-2">
           <Badge tone="blue">{product.marketplace}</Badge>
           <Badge tone="slate">{product.category}</Badge>
@@ -305,7 +301,6 @@ export default function ProductPage({ params }: ProductPageProps) {
           )}
         </div>
 
-        {/* Name */}
         <h1 className="mt-3 text-xl font-black leading-snug text-stone-900">{product.name}</h1>
         <p className="mt-1.5 text-sm font-normal leading-6 text-stone-500">
           {product.description}
@@ -317,7 +312,6 @@ export default function ProductPage({ params }: ProductPageProps) {
           </p>
         )}
 
-        {/* Price comparison (inline) */}
         <div className="mt-3 flex items-center gap-3 rounded-xl bg-stone-50 px-4 py-3">
           <div>
             <p className="text-[11px] font-medium text-stone-400">Одному</p>
@@ -327,7 +321,7 @@ export default function ProductPage({ params }: ProductPageProps) {
           </div>
           <div className="text-stone-300">→</div>
           <div>
-            <p className="text-[11px] font-medium text-stone-500">Командой</p>
+            <p className="text-[11px] font-medium text-stone-500">{group ? "Командой" : "Оценка группой"}</p>
             <p
               className={cn(
                 "text-2xl font-black text-primary transition-all duration-500",
@@ -347,27 +341,25 @@ export default function ProductPage({ params }: ProductPageProps) {
         <PriceLadder product={product} currentMembers={group?.current_members ?? 0} currency={user.currency_preference} />
       </div>
 
-      {/* Trust panel */}
       <div className="mx-4 mt-3 grid grid-cols-3 gap-2">
-        <div className="flex flex-col items-center gap-1 rounded-xl border border-stone-100 bg-white px-2 py-3 text-center shadow-sm">
+        <div className="flex flex-col items-center gap-1 rounded-xl border border-stone-200 bg-white px-2 py-3 text-center shadow-sm">
           <ShieldCheck size={18} className="text-emerald-500" />
           <p className="text-[11px] font-black text-stone-700">{group ? Math.min(group.current_members, 8) : 4} SIM</p>
           <p className="text-[10px] text-stone-400">верифицировано</p>
         </div>
-        <div className="flex flex-col items-center gap-1 rounded-xl border border-stone-100 bg-white px-2 py-3 text-center shadow-sm">
+        <div className="flex flex-col items-center gap-1 rounded-xl border border-stone-200 bg-white px-2 py-3 text-center shadow-sm">
           <Truck size={18} className="text-blue-500" />
           <p className="text-[11px] font-black text-stone-700">7–12 дней</p>
           <p className="text-[10px] text-stone-400">в {user.city}</p>
         </div>
-        <div className="flex flex-col items-center gap-1 rounded-xl border border-stone-100 bg-white px-2 py-3 text-center shadow-sm">
+        <div className="flex flex-col items-center gap-1 rounded-xl border border-stone-200 bg-white px-2 py-3 text-center shadow-sm">
           <span className="text-lg">⭐</span>
           <p className="text-[11px] font-black text-stone-700">{product.rating.toFixed(1)}/5</p>
           <p className="text-[10px] text-stone-400">рейтинг</p>
         </div>
       </div>
 
-      {/* Team section */}
-      <section className="mx-4 mt-4 space-y-4 rounded-2xl border border-stone-100 bg-white p-4 shadow-sm">
+      <section className="mx-4 mt-4 space-y-4 rounded-xl border border-stone-200 bg-white p-4 shadow-sm">
         <div className="flex items-start justify-between gap-4">
           <div>
             <p className="text-base font-black text-stone-800">Групповая покупка</p>
@@ -375,30 +367,44 @@ export default function ProductPage({ params }: ProductPageProps) {
               Когда команда набрана — все платят меньше
             </p>
           </div>
-          <Badge tone="coral" className="shrink-0 gap-1">
-            ⏱ {groupExpired ? "истекло" : group?.expires_at ? <CountdownTimer expiresAt={group.expires_at} /> : "24:00"}
-          </Badge>
+          {group ? (
+            <Badge tone="coral" className="shrink-0 gap-1">
+              ⏱ {groupExpired ? "истекло" : <CountdownTimer expiresAt={group.expires_at} />}
+            </Badge>
+          ) : (
+            <Badge tone="slate" className="shrink-0">нет команды</Badge>
+          )}
         </div>
 
-        <GroupProgress product={product} group={group} />
+        {group ? (
+          <>
+            <GroupProgress product={product} group={group} />
 
-        <div className="flex items-center justify-between gap-3">
-          <div className="flex -space-x-2">
-            {AVATARS.slice(0, avatarCount).map((av, idx) => (
-              <span
-                key={`${av}-${idx}`}
-                className="grid h-8 w-8 place-items-center rounded-full border-2 border-white bg-primary text-[11px] font-black text-white"
-              >
-                {av}
-              </span>
-            ))}
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex -space-x-2">
+                {AVATARS.slice(0, avatarCount).map((av, idx) => (
+                  <span
+                    key={`${av}-${idx}`}
+                    className="grid h-8 w-8 place-items-center rounded-full border-2 border-white bg-stone-950 text-[11px] font-black text-white"
+                  >
+                    {av}
+                  </span>
+                ))}
+              </div>
+              <p className="text-right text-xs font-semibold text-stone-500">
+                {groupCompleted ? "Цена открыта" : `Осталось ${spotsLeft} мест`}
+              </p>
+            </div>
+          </>
+        ) : (
+          <div className="rounded-lg border border-dashed border-stone-300 bg-stone-50 p-4">
+            <p className="text-sm font-black text-stone-900">Активной команды пока нет</p>
+            <p className="mt-1 text-xs font-semibold leading-5 text-stone-500">
+              Товар в каталоге реальный. Для демо команда создается на товарах с активным групповым сбором.
+            </p>
           </div>
-          <p className="text-right text-xs font-semibold text-stone-500">
-            {spotsLeft === 0 ? "Команда готова!" : `Осталось ${spotsLeft} мест`}
-          </p>
-        </div>
+        )}
 
-        {/* Join button */}
         <Button
           className={cn("w-full", spotsLeft <= 2 && canJoin ? "pulse-red" : "")}
           data-testid="join-group"
@@ -417,7 +423,6 @@ export default function ProductPage({ params }: ProductPageProps) {
             : "Войти в команду"}
         </Button>
 
-        {/* Invite panel */}
         {joined && (
           <div className="animate-slide-in-up rounded-xl border border-yellow-300 bg-coupon p-3">
             <p className="text-sm font-black text-ink">Добей сделку: отправь ссылку другу</p>
@@ -457,7 +462,6 @@ export default function ProductPage({ params }: ProductPageProps) {
         )}
       </section>
 
-      {/* Tags */}
       {tags.length > 0 && (
         <div className="mx-4 mt-4 flex flex-wrap gap-2">
           {tags.map((tag) => (
@@ -466,51 +470,52 @@ export default function ProductPage({ params }: ProductPageProps) {
         </div>
       )}
 
-      {/* Sticky bottom bar */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-stone-200 bg-white p-3 shadow-2xl">
-        <div className="mx-auto grid max-w-2xl grid-cols-[0.85fr_1.15fr] gap-2">
-          <div className="rounded-xl bg-stone-50 px-3 py-2 text-center">
-            <span className="block text-[11px] font-medium text-stone-400">Одному</span>
-            <span className="block text-sm font-semibold text-stone-400 line-through">
-              {formatPrice(product.price_individual, user.currency_preference, locale)}
-            </span>
+      {group && (
+        <div className="fixed bottom-16 left-0 right-0 z-40 border-t border-stone-200 bg-white/95 p-3 shadow-2xl backdrop-blur">
+          <div className="mx-auto grid max-w-2xl grid-cols-[0.85fr_1.15fr] gap-2">
+            <div className="rounded-xl bg-stone-50 px-3 py-2 text-center">
+              <span className="block text-[11px] font-medium text-stone-400">Одному</span>
+              <span className="block text-sm font-semibold text-stone-400 line-through">
+                {formatPrice(product.price_individual, user.currency_preference, locale)}
+              </span>
+            </div>
+            <button
+              data-testid="sticky-team-action"
+              className={cn(
+                "rounded-xl px-3 py-2 text-center text-white shadow-glow",
+                joined ? "bg-[#229ED9] disabled:bg-[#229ED9]/60" : "bg-stone-950 disabled:bg-stone-300"
+              )}
+              disabled={simulating || (!joined && !canJoin)}
+              onClick={joined ? copyInvite : joinGroup}
+            >
+              <span className="block text-[11px] font-semibold">
+                {simulating
+                  ? "команда реагирует"
+                  : joined
+                  ? "добей через Telegram"
+                  : groupExpired
+                  ? "команда истекла"
+                  : groupCompleted
+                  ? "цена открыта"
+                  : spotsLeft <= 1
+                  ? "последний рывок"
+                  : "командой сейчас"}
+              </span>
+              <span className="block text-lg font-black">
+                {simulating
+                  ? "Подожди..."
+                  : joined
+                  ? "Скопировать invite"
+                  : groupExpired
+                  ? "Истекло"
+                  : groupCompleted
+                  ? "Готово"
+                  : formatPrice(displayPrice, user.currency_preference, locale)}
+              </span>
+            </button>
           </div>
-          <button
-            data-testid="sticky-team-action"
-            className={cn(
-              "rounded-xl px-3 py-2 text-center text-white shadow-glow",
-              joined ? "bg-[#229ED9] disabled:bg-[#229ED9]/60" : "bg-primary disabled:bg-stone-300"
-            )}
-            disabled={!group || simulating || (!joined && !canJoin)}
-            onClick={joined ? copyInvite : joinGroup}
-          >
-            <span className="block text-[11px] font-semibold">
-              {simulating
-                ? "команда реагирует"
-                : joined
-                ? "добей через Telegram"
-                : groupExpired
-                ? "команда истекла"
-                : groupCompleted
-                ? "цена открыта"
-                : spotsLeft <= 1
-                ? "последний рывок"
-                : "командой сейчас"}
-            </span>
-            <span className="block text-lg font-black">
-              {simulating
-                ? "Подожди..."
-                : joined
-                ? "Скопировать invite"
-                : groupExpired
-                ? "Истекло"
-                : groupCompleted
-                ? "Готово"
-                : formatPrice(displayPrice, user.currency_preference, locale)}
-            </span>
-          </button>
         </div>
-      </div>
+      )}
 
       <DealSuccessModal
         open={successOpen}

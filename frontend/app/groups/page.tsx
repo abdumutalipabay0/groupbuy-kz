@@ -61,17 +61,15 @@ export default function GroupsPage() {
   const locale = user.currency_preference === "USD" ? "en-US" : "ru-KZ";
 
   return (
-    <div className="mx-auto w-full max-w-6xl pb-24">
-      {/* Simple white header */}
-      <header className="bg-white px-4 py-5 shadow-sm md:px-8">
-        <h1 className="text-2xl font-black text-stone-900">Групповые покупки</h1>
+    <div className="mx-auto w-full max-w-6xl bg-[#f6f7f8] pb-24">
+      <header className="border-b border-stone-200 bg-white px-4 py-5 shadow-sm md:px-8">
+        <h1 className="text-2xl font-black text-stone-950">Групповые покупки</h1>
         <p className="mt-0.5 text-sm font-medium text-stone-500">
           Собери команду — сбей цену
         </p>
       </header>
 
-      {/* Sort chips */}
-      <section className="mx-4 mt-4 flex flex-wrap items-center gap-2 rounded-xl border border-stone-100 bg-white p-3 shadow-sm md:mx-8">
+      <section className="mx-4 mt-4 flex flex-wrap items-center gap-2 rounded-xl border border-stone-200 bg-white p-3 shadow-sm md:mx-8">
         <ArrowDownUp size={16} className="text-stone-400" />
         {[
           ["savings", "лучшая цена"],
@@ -82,7 +80,7 @@ export default function GroupsPage() {
             key={value}
             className={`rounded-full px-3 py-1.5 text-sm font-semibold transition ${
               sortMode === value
-                ? "bg-primary text-white"
+                ? "bg-stone-950 text-white"
                 : "bg-stone-100 text-stone-600 hover:bg-stone-200"
             }`}
             onClick={() => setSortMode(value as SortMode)}
@@ -122,12 +120,12 @@ export default function GroupsPage() {
             return (
               <Link key={group.id} href={`/product/${product.id}`} className="block">
                 <Card
-                  className={`grid gap-3 p-3 transition hover:border-stone-300 sm:grid-cols-[86px_1fr_auto] sm:items-center ${
-                    isHot ? "border-primary/30 bg-red-50/30" : "border-stone-100"
+                  className={`grid gap-3 rounded-xl border p-3 shadow-sm transition hover:border-stone-300 sm:grid-cols-[86px_1fr_auto] sm:items-center ${
+                    isHot ? "border-rose-200 bg-rose-50/30" : "border-stone-200 bg-white"
                   }`}
                 >
                   <div className="relative h-24 w-24 overflow-hidden rounded-xl bg-stone-50 sm:h-[86px] sm:w-[86px]">
-                    <div className={`absolute left-1 top-1 z-10 rounded-full px-1.5 py-0.5 text-[10px] font-bold text-white ${expired ? "bg-stone-500" : "bg-primary"}`}>
+                    <div className={`absolute left-1 top-1 z-10 rounded-full px-1.5 py-0.5 text-[10px] font-bold text-white ${expired ? "bg-stone-500" : "bg-stone-950"}`}>
                       {expired ? "истекло" : left === 0 ? "готово" : `+${left}`}
                     </div>
                     <ProductVisual product={product} size="thumb" className="h-full w-full" />
@@ -157,7 +155,7 @@ export default function GroupsPage() {
                       <span className="inline-flex items-center gap-1">
                         ⏱ {expired ? "истекло" : <CountdownTimer expiresAt={group.expires_at} />}
                       </span>
-                      <span className="inline-flex items-center gap-1 text-primary">
+                      <span className="inline-flex items-center gap-1 text-stone-700">
                         <Send size={13} />
                         {actionText}
                       </span>
@@ -165,11 +163,11 @@ export default function GroupsPage() {
                   </div>
 
                   <div className="grid gap-1.5 text-left sm:text-right">
-                    <p className="text-xl font-black text-primary">
+                    <p className="text-xl font-black text-stone-950">
                       {formatPrice(group.price_current, user.currency_preference, locale)}
                     </p>
                     <p className="text-sm font-bold text-stone-500">-{pct}%</p>
-                    <p className="inline-flex items-center gap-1 rounded-full bg-coupon px-2 py-1 text-xs font-bold text-ink sm:justify-end">
+                    <p className="inline-flex items-center gap-1 rounded-md bg-stone-950 px-2 py-1 text-xs font-bold text-white sm:justify-end">
                       <Trophy size={13} />
                       забрать
                     </p>

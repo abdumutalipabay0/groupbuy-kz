@@ -48,7 +48,7 @@ export function ProductVisual({ product, className, size = "card" }: ProductVisu
           sizes={isDetail ? "100vw" : isThumb ? "96px" : "50vw"}
           priority={isDetail}
           unoptimized
-          className="object-cover transition-transform duration-300 group-hover:scale-105"
+          className={`transition-transform duration-300 group-hover:scale-105 ${isDetail ? "object-cover" : "object-contain p-2"}`}
           onError={() => setImgError(true)}
         />
       </div>

@@ -21,6 +21,19 @@ function successProb(group: Group | null | undefined): number {
   return Math.min(96, Math.round(ratio * 72 + timeFactor + 10));
 }
 
+function marketplaceLabel(marketplace: Product["marketplace"]): string {
+  const labels: Record<Product["marketplace"], string> = {
+    AliExpress: "AliExpress",
+    Amazon: "Amazon",
+    Taobao: "Taobao",
+    Wildberries: "Wildberries",
+    OpenFoodFacts: "OpenFood",
+    OpenBeautyFacts: "OpenBeauty",
+    OpenProductsFacts: "OpenProducts",
+  };
+  return labels[marketplace];
+}
+
 export function ProductCard({ product, group = null, currency }: ProductCardProps) {
   const price =
     group?.price_current ??
@@ -35,61 +48,57 @@ export function ProductCard({ product, group = null, currency }: ProductCardProp
   const isExpired = isGroupExpired(group);
 
   return (
-    <article className="group flex h-full flex-col overflow-hidden rounded-2xl bg-white shadow-sm">
-      {/* Image */}
-      <Link href={`/product/${product.id}`} className="relative block aspect-square overflow-hidden bg-stone-100">
+    <article className="group flex h-full flex-col overflow-hidden rounded-xl border border-stone-200 bg-white shadow-[0_1px_2px_rgba(15,23,42,0.05)]">
+      <Link href={`/product/${product.id}`} className="relative block aspect-[4/3] overflow-hidden bg-white">
         <ProductVisual product={product} className="h-full w-full" />
 
-        {/* Discount badge */}
         {discountPct > 0 && (
-          <span className="absolute left-2 top-2 rounded-lg bg-primary px-2 py-0.5 text-[11px] font-black text-white shadow-sm">
+          <span className="absolute left-2 top-2 rounded-md bg-rose-600 px-1.5 py-0.5 text-[10px] font-black text-white shadow-sm">
             -{discountPct}%
           </span>
         )}
 
-        {/* Heart */}
         <span
           aria-hidden="true"
-          className="absolute right-2 top-2 grid h-7 w-7 place-items-center rounded-full bg-white/90 text-stone-400 shadow-sm backdrop-blur-sm transition hover:text-red-500"
+          className="absolute right-2 top-2 grid h-7 w-7 place-items-center rounded-full bg-white/95 text-stone-400 shadow-sm ring-1 ring-black/5 transition hover:text-rose-600"
         >
           <Heart size={14} />
         </span>
 
-        {/* Marketplace chip bottom */}
-        <span className="absolute bottom-2 left-2 rounded-full bg-black/50 px-2 py-0.5 text-[10px] font-bold text-white backdrop-blur-sm">
-          {product.marketplace}
+        <span className="absolute bottom-2 left-2 max-w-[80%] truncate rounded-full bg-stone-950/70 px-2 py-0.5 text-[10px] font-bold text-white backdrop-blur-sm">
+          {product.source_url ? "real · " : ""}
+          {marketplaceLabel(product.marketplace)}
         </span>
       </Link>
 
-      {/* Info */}
-      <div className="flex flex-1 flex-col gap-1.5 p-2.5">
-        <h3 className="line-clamp-2 text-[13px] font-semibold leading-snug text-stone-800">
+      <div className="flex flex-1 flex-col gap-2 p-2.5">
+        <h3 className="line-clamp-2 min-h-[34px] text-[13px] font-bold leading-[17px] text-stone-900">
           {product.name}
         </h3>
 
-        {/* Prices */}
-        <div className="flex items-baseline gap-1.5">
-          <span className="text-base font-black text-primary">
+        <div className="flex flex-wrap items-baseline gap-x-1.5 gap-y-0.5">
+          <span className="text-[17px] font-black leading-none text-stone-950">
             {formatPrice(price, currency, locale)}
           </span>
-          <span className="text-xs text-stone-400 line-through">
+          <span className="text-[11px] font-semibold text-stone-400 line-through">
             {formatPrice(product.price_individual, currency, locale)}
           </span>
         </div>
 
-        {/* AI or done badge */}
-        <p className={`text-[10px] font-semibold ${isDone || isExpired ? "text-stone-500" : "text-emerald-600"}`}>
-          {isExpired ? "⏱ Команда истекла" : isDone ? "✓ Цена зафиксирована" : `✦ AI: ${prob}% шанс закрытия`}
+        <p className={`text-[10px] font-black ${isDone || isExpired ? "text-stone-500" : "text-emerald-600"}`}>
+          {isExpired ? "истекло" : isDone ? "цена зафиксирована" : `AI ${prob}% закрытия`}
         </p>
 
-        {/* Progress */}
         <GroupProgress product={product} group={group} />
 
-        {/* CTA */}
         <Link
           href={`/product/${product.id}`}
-          className={`mt-auto inline-flex h-8 w-full items-center justify-center gap-1 rounded-lg text-xs font-black text-white transition ${
-            isExpired ? "bg-stone-400" : isDone ? "bg-emerald-500 hover:bg-emerald-600" : "bg-primary hover:bg-red-600"
+          className={`mt-auto inline-flex h-8 w-full items-center justify-center gap-1 rounded-md text-xs font-black transition ${
+            isExpired
+              ? "bg-stone-200 text-stone-500"
+              : isDone
+              ? "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200"
+              : "bg-stone-950 text-white hover:bg-primary"
           }`}
         >
           <Users size={12} />
