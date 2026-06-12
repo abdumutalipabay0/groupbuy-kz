@@ -2,10 +2,12 @@
 
 > Pinduoduo-style collective buying for Kazakhstan — find a deal, build a team, send one Telegram link, watch the price drop in real time.
 
-![Next.js](https://img.shields.io/badge/Next.js-14-black?logo=next.js)
-![FastAPI](https://img.shields.io/badge/FastAPI-0.111-009688?logo=fastapi)
+![React](https://img.shields.io/badge/React-18-61DAFB?logo=react)
+![Vite](https://img.shields.io/badge/Vite-5-646CFF?logo=vite)
+![Django](https://img.shields.io/badge/Django-5.2-092E20?logo=django)
+![DRF](https://img.shields.io/badge/DRF-3.15-A30000)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.5-3178C6?logo=typescript)
-![Python](https://img.shields.io/badge/Python-3.11-3776AB?logo=python)
+![Python](https://img.shields.io/badge/Python-3.11+-3776AB?logo=python)
 ![Tailwind](https://img.shields.io/badge/Tailwind-3.4-06B6D4?logo=tailwindcss)
 ![Zustand](https://img.shields.io/badge/Zustand-4.5-orange)
 
@@ -64,7 +66,21 @@ Every invite has **visible, immediate value** — the price on screen drops the 
 - **Achievements** — Первый invite, Команда x3, Серия 3 дня, Топ-5 недели
 - **Leaderboard** — top inviters of the week with savings shown
 
+### Accounts, roles & seller cabinet
+- **RBAC** — buyer / seller roles (DRF token auth) + a full **Django admin** (`/admin/`)
+- **SIM/eSIM sign-up** — register with a KZ phone, verify a one-time code (1 SIM = 1 account);
+  dev shows the code in-form, production plugs an SMS gateway in `services/sim.py`
+- **Seller cabinet** (`/seller`) — sellers add/delete their own products; a starter group
+  is created automatically so the join/price-drop flow works on day one
+
 ### Discovery & trust
+- **AI buyer** (`/ai`) — free-text queries («робот-пылесос до 80 000 ₸») → finds a product,
+  picks an active group close to closing or creates a new one. Real **Google Gemini**
+  (set `GEMINI_API_KEY`) reading candidates from the DB, with a rule-based NLU fallback
+  (budget + RU/KZ keywords); works fully offline and in the Vercel standalone demo
+- **Live group updates** — product/invite pages poll every 3s: a join on one phone makes
+  the price visibly drop on the other (the two-device demo)
+- **KZ/RU localization** — ҚАЗ/РУС switcher in the feed header (nav, hero, key CTAs)
 - **AI-powered feed** — tag-intersection + budget-bonus recommender scores each product per user
 - **Real search** — filters by product name and tags live as you type
 - **SIM/eSIM trust badge** — UI concept: device marked verified to reduce fake groups
@@ -77,42 +93,77 @@ Every invite has **visible, immediate value** — the price on screen drops the 
 
 | Layer | Tech |
 |-------|------|
-| Frontend | Next.js 14 App Router, TypeScript, Tailwind CSS |
+| Frontend | React 18 + Vite, React Router 6, TypeScript, Tailwind CSS |
 | State | Zustand with `persist` middleware (localStorage) |
 | Icons | lucide-react |
-| Backend | FastAPI, Pydantic v2, Python 3.11 |
-| Package mgr | pnpm (frontend), uv (backend) |
-| Data | JSON seed files — no database |
+| Backend | Django 5 + Django REST Framework, Python 3.11+ |
+| Package mgr | npm/pnpm (frontend), pip/uv (backend) |
+| Data | JSON seed files — no database (Django runs model-less) |
 | Auth | Mock JWT in localStorage |
 
 ---
 
 ## Quick Start
 
-**Backend**
+**Backend** (Django + DRF + SQLite)
 
 ```bash
 cd backend
-uv sync
-uv run uvicorn main:app --reload --host 127.0.0.1 --port 8000
+python -m venv .venv
+# Windows:        .venv\Scripts\activate
+# macOS / Linux:  source .venv/bin/activate
+pip install "django>=5.0,<6.0" "djangorestframework>=3.15" "django-cors-headers>=4.4" "requests>=2.31"
+python manage.py migrate        # create the SQLite DB
+python manage.py seed_demo      # REQUIRED: catalog + test accounts + admin
+python manage.py runserver 127.0.0.1:8000
 ```
 
-**Frontend**
+> See **[SETUP.md](SETUP.md)** for the full "what you need from me" guide
+> (Gemini key, accounts, admin). For the real AI buyer, set `GEMINI_API_KEY`
+> before `runserver` — otherwise it falls back to the rule-based matcher.
+> Test accounts: buyer `+77000000001` / seller `+77000000002` / `birge123`;
+> Django admin `admin` / `admin123` at `/admin/`.
+
+**Frontend** (React + Vite)
 
 ```bash
 cd frontend
-pnpm install
-pnpm dev
+npm install     # or: pnpm install
+npm run dev     # or: pnpm dev
 ```
 
-**Open** → `http://127.0.0.1:3000/feed`
+**Open** → `http://127.0.0.1:5173/feed`
 
 **Optional env** (frontend already defaults to this):
 
 ```bash
 # frontend/.env.local
-NEXT_PUBLIC_API_URL=http://127.0.0.1:8000
+VITE_API_URL=http://127.0.0.1:8000
 ```
+
+> For the two-phone LAN demo, set `VITE_API_URL` to the laptop's LAN IP
+> (e.g. `http://192.168.0.10:8000`); the Vite dev server already binds to the LAN.
+
+---
+
+## Deploy to Vercel
+
+The frontend deploys to Vercel as a fully standalone demo — when the Django
+backend is unreachable, the app automatically switches to a bundled in-browser
+demo API (same data, same pricing math, joins persist in localStorage) and
+shows a small "demo data" chip. Zero backend infrastructure needed.
+
+```bash
+npm i -g vercel
+cd frontend
+vercel          # preview deploy
+vercel --prod   # production deploy
+```
+
+Or import the repo at vercel.com → set **Root Directory = `frontend`** —
+the Vite framework preset and `vercel.json` (SPA rewrites) handle the rest.
+To use a real hosted backend instead, set the `VITE_API_URL` env var in the
+Vercel project settings.
 
 ---
 
@@ -136,8 +187,8 @@ NEXT_PUBLIC_API_URL=http://127.0.0.1:8000
 |-------|-------------|
 | `/register` | Onboarding: name, city, interests, budget, SIM-trust concept |
 | `/feed` | Deal catalog with coupons, hot teams, daily mission, search, filters |
-| `/product/[id]` | Team-buy page — hero interaction: join → invite → price drop |
-| `/join/[groupId]` | Telegram invite landing for incoming friends |
+| `/product/:id` | Team-buy page — hero interaction: join → invite → price drop |
+| `/join/:groupId` | Telegram invite landing for incoming friends |
 | `/groups` | All active teams, sortable by savings / timer / category |
 | `/profile` | Coins, streak, achievements, leaderboard, active deals |
 
@@ -194,25 +245,33 @@ score = (overlap * budget_bonus, product.rating)
 ```
 backend/
 ├── data/           seed JSON — demo products + 200 real Open Facts products
-├── models/         Pydantic v2 schemas
-├── routers/        auth · products · feed · groups · recommend
-└── services/       group_pricing.py · recommender.py
+├── groupbuy/       Django project (settings · urls · wsgi/asgi)
+└── api/            Django app
+    ├── views.py        function views: auth · products · feed · groups · recommend
+    ├── urls.py         URL routing (no trailing slashes — matches the fetch client)
+    ├── serializers.py  request validation (mirrors the old Pydantic constraints)
+    ├── repository.py   JSON-file data access
+    ├── responses.py    the shared ApiResponse envelope
+    ├── exceptions.py   wraps errors in the same envelope
+    ├── auth_tokens.py  mock SIM/eSIM JWT
+    └── services/       group_pricing.py · group_status.py · recommender.py
 
 frontend/
-├── app/
-│   ├── (auth)/register/
-│   ├── feed/
-│   ├── product/[id]/
-│   ├── join/[groupId]/
-│   ├── groups/
-│   └── profile/
-├── components/
-│   ├── auth/       SimBadge
-│   ├── product/    ProductCard · ProductVisual · GroupProgress · PriceComparison
-│   └── ui/         Button · Badge · Card · Modal · ProgressBar
-│                   CountdownTimer · LiveActivity · DealSuccessModal
-├── lib/            api.ts · store.ts · utils.ts
-└── types/          index.ts — full API contract mirrors
+├── index.html
+├── vite.config.ts
+└── src/
+    ├── main.tsx        React root + BrowserRouter
+    ├── App.tsx         React Router routes
+    ├── index.css       global styles + keyframes
+    ├── layout/         Layout (BottomNav + LiveActivity + Outlet)
+    ├── pages/          Register · Feed · Product · Join · Groups · Profile
+    ├── components/
+    │   ├── auth/       SimBadge
+    │   ├── product/    ProductCard · ProductVisual · GroupProgress · PriceComparison
+    │   └── ui/         Button · Badge · Card · Modal · ProgressBar
+    │                   CountdownTimer · LiveActivity · DealSuccessModal
+    ├── lib/            api.ts · store.ts · utils.ts
+    └── types/          index.ts — full API contract mirrors
 ```
 
 ---
@@ -245,13 +304,13 @@ node scripts/import_openfacts_products.mjs
 
 ```bash
 # TypeScript
-cd frontend && pnpm exec tsc --noEmit
+cd frontend && npm run typecheck
 
-# Python syntax
-cd backend && python3 -m compileall . -q
+# Django system checks
+cd backend && python manage.py check
 
 # Production build
-cd frontend && pnpm run build
+cd frontend && npm run build
 ```
 
 ---
@@ -272,3 +331,4 @@ cd frontend && pnpm run build
 | Payments | 🎭 Not implemented |
 | JWT auth | 🎭 Mock token |
 | Database | 🎭 JSON files |
+| Vercel standalone mode | 🎭 Bundled demo API in the browser (auto-fallback) |

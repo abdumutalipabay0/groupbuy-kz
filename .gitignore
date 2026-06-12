@@ -2,11 +2,13 @@
 node_modules/
 .pnpm-store/
 
-# Next.js
-.next/
-out/
-frontend/.next/
-frontend/out/
+# Vite build output
+dist/
+frontend/dist/
+.vite/
+
+# Scratch verification screenshots
+frontend/shots/
 
 # Python
 __pycache__/
@@ -14,6 +16,8 @@ __pycache__/
 *.pyo
 .venv/
 backend/.venv/
+backend/db.sqlite3
+backend/staticfiles/
 
 # Env
 .env

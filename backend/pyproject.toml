@@ -1,12 +1,14 @@
 [project]
 name = "groupbuy-backend"
-version = "0.1.0"
-description = "FastAPI backend for GroupBuy hackathon MVP"
+version = "0.2.0"
+description = "Django + DRF backend for Birge / GroupBuy MVP (RBAC, SIM auth, Gemini AI)"
 requires-python = ">=3.11"
 dependencies = [
-    "fastapi>=0.111.0",
-    "pydantic>=2.7.0",
-    "uvicorn[standard]>=0.30.0"
+    "django>=5.0,<6.0",
+    "djangorestframework>=3.15.0",
+    "django-cors-headers>=4.4.0",
+    "requests>=2.31.0",
+    "python-dotenv>=1.0.0",
 ]
 
 [tool.uv]

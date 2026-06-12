@@ -153,35 +153,5 @@
     "sim_verified": true,
     "currency_preference": "KZT",
     "language": "ru"
-  },
-  {
-    "id": "u6c1e3c76",
-    "sim_verified": true,
-    "name": "Aruzhan",
-    "city": "Almaty",
-    "age": 24,
-    "budget_usd": 120,
-    "interests": [
-      "gaming",
-      "electronics",
-      "gadgets"
-    ],
-    "currency_preference": "KZT",
-    "language": "ru"
-  },
-  {
-    "id": "u2ffc7e47",
-    "sim_verified": true,
-    "name": "Aruzhan",
-    "city": "Almaty",
-    "age": 24,
-    "budget_usd": 120,
-    "interests": [
-      "gaming",
-      "electronics",
-      "gadgets"
-    ],
-    "currency_preference": "KZT",
-    "language": "ru"
   }
 ]
