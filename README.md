@@ -1,6 +1,11 @@
-# GroupBuy KZ
+# Birge — collective buying for Kazakhstan
 
-> Pinduoduo-style collective buying for Kazakhstan — find a deal, build a team, send one Telegram link, watch the price drop in real time.
+> "Birge" (Kazakh for *together*) — Pinduoduo-style group buying: find a deal, build a team,
+> send one invite link, watch the price drop in real time. Buyers & sellers, SIM/eSIM auth,
+> a Gemini AI buyer, and a Django admin.
+>
+> 👉 First time here? Read **[SETUP.md](SETUP.md)** — what to install, which keys are optional,
+> and the test accounts.
 
 ![React](https://img.shields.io/badge/React-18-61DAFB?logo=react)
 ![Vite](https://img.shields.io/badge/Vite-5-646CFF?logo=vite)
@@ -52,11 +57,18 @@ Every invite has **visible, immediate value** — the price on screen drops the 
 ### Core mechanics
 - **Group pricing** — linear interpolation from `price_individual` to `price_group_min` as members fill the team. Every join drops the price for everyone.
 - **Optimistic UI** — price updates instantly on click, then reconciles with the server response. Zero perceived latency.
-- **Friend simulation** — "Copy invite" triggers a scripted sequence: friends arrive, join, price drops, deal closes. Demos in 30 seconds.
+- **Real recruitment** — joining writes a `Membership` (1 SIM = 1 seat); people who open your
+  invite link actually join, and the product/invite pages poll every 3s so the price drops live.
 - **Telegram share** — native deep link with pre-filled message and group URL. One tap from the product page.
 
+### Preview vs real mode
+- **Preview mode** — "Посмотреть демо без входа" on the landing: a guest explores on bundled
+  in-browser data with the scripted "live" experience (activity toasts, friend simulation)
+- **Real notifications** — logged-in users get genuine notifications (bell + Web Notifications)
+  when a teammate actually joins their group or a team completes — polled from `/me/groups`
+
 ### Engagement & retention
-- **Live activity toasts** — floating notifications ("Айгерим вступила через Telegram", "Команда закрылась!") make the platform feel alive without real traffic
+- **Live activity toasts** — floating notifications ("Айгерим вступила через Telegram", "Команда закрылась!"), shown in **preview mode** to make the demo feel alive
 - **Ticking countdown timers** — real-time urgency. Turns orange < 1 hour, red < 10 minutes
 - **"N watching now"** counter on product pages — social proof
 - **Daily mission bar** — 3 actions → unlock hidden coupon. Progress visible on every page
@@ -68,22 +80,25 @@ Every invite has **visible, immediate value** — the price on screen drops the 
 
 ### Accounts, roles & seller cabinet
 - **RBAC** — buyer / seller roles (DRF token auth) + a full **Django admin** (`/admin/`)
-- **SIM/eSIM sign-up** — register with a KZ phone, verify a one-time code (1 SIM = 1 account);
-  dev shows the code in-form, production plugs an SMS gateway in `services/sim.py`
+- **SIM/eSIM sign-up** — register with a KZ phone (formatted as you type), verify an OTP
+  (1 SIM = 1 account). Real SMS gateway layer — **Twilio / Mobizon (KZ) / SMSC**, or `console`
+  in dev (code shown in-form). Anti-spam cooldown; login by password or by SMS code
 - **Seller cabinet** (`/seller`) — sellers add/delete their own products; a starter group
   is created automatically so the join/price-drop flow works on day one
 
 ### Discovery & trust
 - **AI buyer** (`/ai`) — free-text queries («робот-пылесос до 80 000 ₸») → finds a product,
   picks an active group close to closing or creates a new one. Real **Google Gemini**
-  (set `GEMINI_API_KEY`) reading candidates from the DB, with a rule-based NLU fallback
-  (budget + RU/KZ keywords); works fully offline and in the Vercel standalone demo
+  (set `GEMINI_API_KEY`) over the DB catalog, with a rule-based NLU fallback (budget + RU/KZ keywords)
+- **Web product search** — when nothing matches the DB, the AI buyer pulls a **real product
+  from the web** (SerpApi Google Shopping, set `SERPAPI_KEY`), saves it, and forms a group around it
 - **Live group updates** — product/invite pages poll every 3s: a join on one phone makes
   the price visibly drop on the other (the two-device demo)
 - **KZ/RU localization** — ҚАЗ/РУС switcher in the feed header (nav, hero, key CTAs)
+- **Dark mode** — 🌙/☀️ toggle in the feed header, persisted; coherent across all screens
 - **AI-powered feed** — tag-intersection + budget-bonus recommender scores each product per user
 - **Real search** — filters by product name and tags live as you type
-- **SIM/eSIM trust badge** — UI concept: device marked verified to reduce fake groups
+- **SIM/eSIM trust** — real OTP binding (1 SIM = 1 account) to keep groups free of bot/fake fills
 - **Category filters + budget slider** — instant client-side filtering
 - **"Горящие команды"** — top-3 groups by fill progress, shown on every feed page
 
@@ -93,13 +108,15 @@ Every invite has **visible, immediate value** — the price on screen drops the 
 
 | Layer | Tech |
 |-------|------|
-| Frontend | React 18 + Vite, React Router 6, TypeScript, Tailwind CSS |
-| State | Zustand with `persist` middleware (localStorage) |
+| Frontend | React 18 + Vite, React Router 6, TypeScript, Tailwind CSS (dark mode) |
+| State | Zustand with `persist` middleware (token + session in localStorage) |
 | Icons | lucide-react |
-| Backend | Django 5 + Django REST Framework, Python 3.11+ |
+| Backend | Django 5 + Django REST Framework, **SQLite (ORM)**, Python 3.11+ |
+| Auth | DRF **TokenAuthentication** + **SIM/eSIM OTP** (KZ phone); Django admin |
+| RBAC | `buyer` / `seller` roles; seller cabinet; superuser admin at `/admin/` |
+| AI | Google **Gemini** (REST) over the DB catalog + rule-based fallback; **SerpApi** web search |
+| Config | everything via `.env` (python-dotenv) — see `backend/.env.example`, `frontend/.env.example` |
 | Package mgr | npm/pnpm (frontend), pip/uv (backend) |
-| Data | JSON seed files — no database (Django runs model-less) |
-| Auth | Mock JWT in localStorage |
 
 ---
 
@@ -167,30 +184,35 @@ Vercel project settings.
 
 ---
 
-## Demo Script (30 seconds)
+## Demo Script (~60 seconds)
 
-1. Open `/feed` — note live activity toast in bottom-left, online counter in header
-2. Click a coupon — coins animate up, mission bar advances
-3. Open **Dyson Supersonic** or **Logitech G305**
-4. Click **"Войти в команду"** — price drops instantly, button changes
-5. Click **"Скопировать invite"** — friends start arriving in the live events feed
-6. Watch the deal close — success modal with savings and Telegram share
-7. Open `/join/g002` — show the Telegram landing page a friend receives
-8. Open `/groups` — show all teams sorted by savings, ticking timers, 🔥 badges
-9. Open `/profile` — coins, streak, achievements, leaderboard
+1. Landing `/` → **"Посмотреть демо без входа"** (preview) — or log in as the buyer test account
+2. `/ai` — type «робот-пылесос до 80 000 ₸» → AI finds a product + group, tap **"Открыть и вступить"**
+3. On the product page tap **"Войти в команду"** — price drops instantly (optimistic, then reconciled)
+4. **Two-device live drop:** open the same `/product/:id` on a second device/tab, join there →
+   the first screen's price drops within ~3s, and (logged in) a **notification** fires
+5. Open `/join/:groupId` — the invite landing a friend receives
+6. Log in as the **seller** (`+77000000002` / `birge123`) → **Магазин** → add a product (a group is auto-created)
+7. `/admin/` (`admin` / `admin123`) — Django admin over Products / Groups / Users
+8. Toggle 🌙 dark mode and ҚАЗ language in the feed header
 
 ---
 
 ## Routes
 
-| Route | Description |
-|-------|-------------|
-| `/register` | Onboarding: name, city, interests, budget, SIM-trust concept |
-| `/feed` | Deal catalog with coupons, hot teams, daily mission, search, filters |
-| `/product/:id` | Team-buy page — hero interaction: join → invite → price drop |
-| `/join/:groupId` | Telegram invite landing for incoming friends |
-| `/groups` | All active teams, sortable by savings / timer / category |
-| `/profile` | Coins, streak, achievements, leaderboard, active deals |
+| Route | Access | Description |
+|-------|--------|-------------|
+| `/` | public | Marketing landing — CTAs to register / login / **preview without login** |
+| `/register` | public | Role (buyer/seller) → KZ phone → SIM OTP → profile |
+| `/login` | public | Phone + password, or phone + SMS code (eye toggle, phone formatting) |
+| `/feed` | auth | Deal catalog with hot teams, AI-buyer entry, search, filters, notifications bell |
+| `/ai` | auth | AI buyer chat (Gemini) — query → product + group card |
+| `/product/:id` | auth | Team-buy page — join → invite → live price drop |
+| `/join/:groupId` | auth | Invite landing for incoming friends (live updates) |
+| `/groups` | auth | All active teams, sortable by savings / timer / category |
+| `/seller` | seller | Seller cabinet — add / delete own products |
+| `/profile` | auth | Role, coins, streak, achievements, leaderboard, active deals, logout |
+| `/admin/` | superuser | Django admin (Products, Groups, Users, Memberships, Tokens) |
 
 ---
 
@@ -202,17 +224,23 @@ All responses:
 { "data": {}, "success": true, "message": "OK" }
 ```
 
+Authenticated requests send `Authorization: Token <key>`.
+
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| `POST` | `/auth/register` | Create user, return mock JWT |
-| `POST` | `/auth/login` | Login by user_id |
-| `GET` | `/products` | All products |
-| `GET` | `/products/{id}` | Product + active group |
-| `GET` | `/feed?user_id=&limit=` | Personalized feed via recommender |
-| `GET` | `/groups` | All active/completed groups |
-| `GET` | `/groups/{id}` | Group + product detail |
-| `POST` | `/groups/{id}/join` | Join group, recalculate price |
-| `GET` | `/recommend?user_id=&limit=` | Tag-scored recommendations |
+| `POST` | `/auth/sim/request` | Send OTP (`purpose: register \| login`); cooldown-throttled |
+| `POST` | `/auth/register` | Create user after OTP verify → DRF token + user |
+| `POST` | `/auth/login` | Login by phone + password **or** phone + code → token |
+| `GET` | `/auth/me` | Current user (token) |
+| `GET` | `/me/groups` | Groups the user joined (powers real notifications) |
+| `GET` | `/products` · `/products/{id}` | Catalog · product + active group |
+| `GET` | `/feed` · `/recommend` | Personalized feed / recommendations (recommender) |
+| `GET` | `/groups` · `/groups/{id}` | Active/completed groups · group + product |
+| `POST` | `/groups/{id}/join` | Join group (Membership), recalculate price |
+| `POST` | `/groups/create` | Find-or-create an active group for a product |
+| `POST` | `/ai/buyer` | AI buyer: query → product + group (Gemini → rules → web search) |
+| `GET POST` | `/seller/products` | Seller: list / add own products *(IsSeller)* |
+| `PATCH DELETE` | `/seller/products/{id}` | Seller: edit / delete own product *(IsSeller)* |
 
 ---
 
@@ -244,33 +272,31 @@ score = (overlap * budget_bonus, product.rating)
 
 ```
 backend/
+├── .env.example    all backend config (Gemini · SerpApi · SMS · seed creds)
 ├── data/           seed JSON — demo products + 200 real Open Facts products
 ├── groupbuy/       Django project (settings · urls · wsgi/asgi)
 └── api/            Django app
-    ├── views.py        function views: auth · products · feed · groups · recommend
+    ├── models.py       User(role/phone/sim) · Product · Group · Membership · SimVerification
+    ├── views.py        endpoints: auth/SIM · products · feed · ai · groups · seller
     ├── urls.py         URL routing (no trailing slashes — matches the fetch client)
-    ├── serializers.py  request validation (mirrors the old Pydantic constraints)
-    ├── repository.py   JSON-file data access
-    ├── responses.py    the shared ApiResponse envelope
-    ├── exceptions.py   wraps errors in the same envelope
-    ├── auth_tokens.py  mock SIM/eSIM JWT
-    └── services/       group_pricing.py · group_status.py · recommender.py
+    ├── serialize.py    model → dict (shape shared by services + frontend)
+    ├── permissions.py  IsSeller
+    ├── admin.py        Django admin registration
+    ├── responses.py · exceptions.py   shared ApiResponse envelope
+    ├── services/       ai_buyer (Gemini) · external_search (SerpApi) · sim · sms
+    │                   group_pricing · group_status · recommender
+    └── management/commands/seed_demo.py   catalog + test accounts + admin
 
 frontend/
-├── index.html
-├── vite.config.ts
+├── .env.example · vercel.json · vite.config.ts
 └── src/
-    ├── main.tsx        React root + BrowserRouter
-    ├── App.tsx         React Router routes
-    ├── index.css       global styles + keyframes
-    ├── layout/         Layout (BottomNav + LiveActivity + Outlet)
-    ├── pages/          Register · Feed · Product · Join · Groups · Profile
-    ├── components/
-    │   ├── auth/       SimBadge
-    │   ├── product/    ProductCard · ProductVisual · GroupProgress · PriceComparison
-    │   └── ui/         Button · Badge · Card · Modal · ProgressBar
-    │                   CountdownTimer · LiveActivity · DealSuccessModal
-    ├── lib/            api.ts · store.ts · utils.ts
+    ├── main.tsx · App.tsx (routes + RequireAuth/RequireSeller guards) · index.css
+    ├── layout/         Layout (preview banner · notifications poller · BottomNav)
+    ├── pages/          Landing · Register · Login · Feed · Ai · Product · Join · Groups · SellerAdmin · Profile
+    ├── components/ui/  Button · Badge · Card · ProgressBar · Skeleton · BottomNav
+    │                   CountdownTimer · LiveActivity · DealSuccessModal · NotificationsBell
+    ├── components/product/  ProductCard · ProductVisual · GroupProgress
+    ├── lib/            api.ts · store.ts · utils.ts · demo.ts · i18n.ts · useRealNotifications.ts
     └── types/          index.ts — full API contract mirrors
 ```
 
@@ -278,10 +304,11 @@ frontend/
 
 ## Seed Data Reset
 
-Joining a group mutates `backend/data/groups.json`. Reset before a fresh demo:
+The DB (SQLite) is the source of truth. Re-seed catalog + test accounts + admin
+anytime (idempotent — wipes and recreates the demo data):
 
 ```bash
-git checkout backend/data/groups.json
+cd backend && python manage.py seed_demo
 ```
 
 ## Real Product Catalog
@@ -319,16 +346,15 @@ cd frontend && npm run build
 
 | Feature | Status |
 |---------|--------|
-| Group pricing algorithm | ✅ Real math |
-| Recommender | ✅ Real scoring |
-| Optimistic UI | ✅ Real pattern |
-| Countdown timers | ✅ Real ticking |
-| Price drop animation | ✅ Real CSS transition |
-| Live activity toasts | 🎭 Scripted (no real users) |
-| "Viewing now" counter | 🎭 Simulated drift |
-| Friend simulation | 🎭 Scripted timeouts |
-| SIM/eSIM verification | 🎭 UI concept only |
-| Payments | 🎭 Not implemented |
-| JWT auth | 🎭 Mock token |
-| Database | 🎭 JSON files |
-| Vercel standalone mode | 🎭 Bundled demo API in the browser (auto-fallback) |
+| Database | ✅ SQLite via Django ORM |
+| Auth | ✅ DRF TokenAuthentication + RBAC (buyer/seller) + Django admin |
+| SIM/eSIM verification | ✅ Real OTP + SMS gateway layer (Twilio/Mobizon/SMSC; `console` in dev) |
+| Group recruitment | ✅ Real Membership joins via invite link (1 SIM = 1 seat) |
+| Notifications | ✅ Real (poll `/me/groups` + Web Notifications) for logged-in users |
+| Seller cabinet | ✅ Add/delete own products → group auto-created |
+| AI buyer | ✅ Real Gemini over the DB (rule-based fallback) |
+| Web product search | ✅ Real (SerpApi) when DB has no match — needs `SERPAPI_KEY` |
+| Group pricing / recommender / optimistic UI / timers | ✅ Real |
+| Preview mode (toasts, friend simulation, "watching now") | 🎭 Scripted — preview only |
+| Payments | 🎭 Not implemented (Vision stage) |
+| Vercel standalone mode | 🎭 Bundled in-browser demo API (auto-fallback, incl. auth/seller) |
