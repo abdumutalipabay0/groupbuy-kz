@@ -55,22 +55,22 @@ export function LandingPage() {
     <div className="mx-auto grid min-h-screen w-full max-w-6xl gap-5 px-4 py-6 md:grid-cols-[1fr_0.85fr] md:items-center md:gap-10 md:px-8">
       <section className="flex flex-col justify-center">
         {/* Live ticker */}
-        <div className="mb-4 flex items-center gap-3 rounded-full bg-white px-4 py-2.5 shadow-card ring-1 ring-black/5">
-          <span className="h-2 w-2 shrink-0 animate-pulse rounded-full bg-emerald-500" />
-          <p key={recentIdx} className="animate-slide-in-up truncate text-xs font-black text-emerald-700">
+        <div className="mb-4 flex items-center gap-3 rounded-full bg-panel px-4 py-2.5 shadow-card ring-1 ring-black/5" aria-live="polite">
+          <span aria-hidden="true" className="h-2 w-2 shrink-0 animate-pulse rounded-full bg-mint" />
+          <p key={recentIdx} className="animate-slide-in-up truncate text-xs font-black text-mint">
             {RECENT_JOINS[recentIdx]}
           </p>
-          <span className="ml-auto shrink-0 text-[10px] font-black text-stone-400">{onlineCount} онлайн</span>
+          <span className="ml-auto shrink-0 text-[10px] font-black text-inkSoft">{onlineCount} онлайн</span>
         </div>
 
         <Badge tone="coral" className="w-fit gap-1">
           <Zap size={14} />
           Pinduoduo-механика для Казахстана
         </Badge>
-        <h1 className="mt-4 font-display text-4xl font-black leading-[1.05] text-ink md:text-6xl">
+        <h1 className="mt-4 font-display text-4xl font-black leading-[1.05] text-ink md:text-6xl text-balance">
           Вместе <span className="text-fire">дешевле</span>.
         </h1>
-        <p className="mt-4 max-w-xl text-base font-medium leading-7 text-stone-600 md:text-lg">
+        <p className="mt-4 max-w-xl text-base font-medium leading-7 text-inkSoft md:text-lg">
           Birge объединяет покупателей в группы, чтобы получить оптовую цену на зарубежных
           маркетплейсах. Набралась команда — все платят меньше. Цены сразу в тенге с доставкой.
         </p>
@@ -84,11 +84,11 @@ export function LandingPage() {
           ].map(([Icon, title, value]) => {
             const Typed = Icon as typeof Ticket;
             return (
-              <div key={title as string} className="rounded-2xl border border-stone-100 bg-white p-3 shadow-card">
-                <span className="grid h-8 w-8 place-items-center rounded-xl bg-gold-gradient text-ink shadow-sm">
+              <div key={title as string} className="rounded-2xl border border-hairline bg-panel p-3 shadow-card">
+                <span className="grid h-8 w-8 place-items-center rounded-xl bg-gold-gradient text-charcoal shadow-sm">
                   <Typed size={16} />
                 </span>
-                <p className="mt-2 text-[11px] font-bold text-stone-500">{title as string}</p>
+                <p className="mt-2 text-[11px] font-bold text-inkSoft">{title as string}</p>
                 <p className="text-sm font-black text-ink">{value as string}</p>
               </div>
             );
@@ -112,12 +112,12 @@ export function LandingPage() {
         <button
           data-testid="preview-cta"
           onClick={startPreview}
-          className="mt-2.5 inline-flex items-center gap-1.5 self-start text-sm font-black text-stone-500 underline-offset-4 transition hover:text-primary hover:underline"
+          className="mt-2.5 inline-flex items-center gap-1.5 self-start text-sm font-black text-inkSoft underline-offset-4 transition-colors hover:text-primary hover:underline"
         >
           <Eye size={15} />
           Посмотреть демо без входа
         </button>
-        <p className="mt-2 text-center text-[11px] font-bold text-stone-400 sm:text-left">
+        <p className="mt-2 text-center text-[11px] font-bold text-inkSoft sm:text-left">
           {onlineCount} человек сейчас ищут сделки в Birge
         </p>
       </section>
@@ -136,14 +136,14 @@ export function LandingPage() {
               ["34%", "приходят по Telegram-ссылке"],
               ["x2.4", "возврат за новыми купонами"]
             ].map(([val, label]) => (
-              <div key={val} className="flex items-center gap-3 rounded-xl bg-stone-50 px-3 py-2">
-                <span className="text-lg font-black text-primary">{val}</span>
-                <span className="text-xs font-bold text-stone-600">{label}</span>
+              <div key={val} className="flex items-center gap-3 rounded-xl bg-panelSoft px-3 py-2">
+                <span className="text-lg font-black text-primary tabular-nums">{val}</span>
+                <span className="text-xs font-bold text-inkSoft">{label}</span>
               </div>
             ))}
           </div>
 
-          {/* SIM/eSIM trust — dark premium panel */}
+          {/* SIM/eSIM trust — dark premium panel, fixed-dark regardless of theme */}
           <div className="relative overflow-hidden rounded-2xl bg-ink-gradient p-4 text-white">
             <div className="pointer-events-none absolute -right-8 -top-10 h-32 w-32 rounded-full bg-primary/30 blur-3xl" />
             <div className="relative">
@@ -163,7 +163,7 @@ export function LandingPage() {
                   const Typed = Icon as typeof Gift;
                   return (
                     <div key={label as string} className="text-[11px] font-bold text-white/60">
-                      <Typed size={18} className="mx-auto mb-1 text-white" />
+                      <Typed size={18} className="mx-auto mb-1 text-white" aria-hidden="true" />
                       {(label as string).split("\n").map((l) => (
                         <span key={l} className="block">
                           {l}

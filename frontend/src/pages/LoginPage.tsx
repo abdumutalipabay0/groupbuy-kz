@@ -57,7 +57,7 @@ export function LoginPage() {
       <Link
         to="/"
         data-testid="to-landing"
-        className="absolute left-4 top-5 inline-flex items-center gap-1 rounded-full bg-white px-3 py-1.5 text-xs font-black text-stone-600 shadow-card ring-1 ring-black/5 transition hover:text-primary"
+        className="absolute left-4 top-5 inline-flex items-center gap-1 rounded-full bg-panel px-3 py-1.5 text-xs font-black text-inkSoft shadow-card ring-1 ring-black/5 transition-colors hover:text-primary"
       >
         <ChevronLeft size={15} />
         На главную
@@ -68,11 +68,11 @@ export function LoginPage() {
           Birge
         </Badge>
         <h1 className="mt-3 font-display text-2xl font-black leading-tight text-ink">С возвращением 👋</h1>
-        <p className="mt-1.5 text-sm font-semibold text-stone-500">Войди по паролю или по SMS-коду</p>
+        <p className="mt-1.5 text-sm font-semibold text-inkSoft">Войди по паролю или по SMS-коду</p>
       </div>
 
       <Card className="space-y-4">
-        <div className="grid grid-cols-2 gap-1 rounded-xl bg-stone-100 p-1">
+        <div className="grid grid-cols-2 gap-1 rounded-xl bg-panelSoft p-1">
           {[
             { value: "password" as const, label: "Пароль" },
             { value: "code" as const, label: "SMS-код" }
@@ -80,8 +80,8 @@ export function LoginPage() {
             <button
               key={value}
               onClick={() => setMode(value)}
-              className={`rounded-lg py-2 text-sm font-black transition ${
-                mode === value ? "bg-white text-primary shadow-sm" : "text-stone-500"
+              className={`rounded-lg py-2 text-sm font-black transition-colors ${
+                mode === value ? "bg-panel text-primary shadow-sm" : "text-inkSoft"
               }`}
             >
               {label}
@@ -89,26 +89,33 @@ export function LoginPage() {
           ))}
         </div>
 
-        <label className="block space-y-2 text-sm font-black text-stone-800">
+        <label htmlFor="login-phone" className="block space-y-2 text-sm font-black text-ink">
           Номер телефона
           <input
+            id="login-phone"
             data-testid="login-phone"
-            inputMode="numeric"
-            className="w-full rounded-xl bg-white px-3 py-3 tracking-wide text-ink outline-none ring-1 ring-black/5 focus:ring-2 focus:ring-primary/30"
-            placeholder="+7 7XX XXX XX XX"
+            type="tel"
+            inputMode="tel"
+            autoComplete="tel"
+            name="tel"
+            className="w-full rounded-xl bg-panel px-3 py-3 tracking-wide text-ink outline-none ring-1 ring-black/5 focus:ring-2 focus:ring-primary/30"
+            placeholder="+7 7XX XXX XX XX…"
             value={phone}
             onChange={(e) => setPhone(formatKzPhone(e.target.value))}
           />
         </label>
 
         {mode === "password" ? (
-          <label className="block space-y-2 text-sm font-black text-stone-800">
+          <label htmlFor="login-password" className="block space-y-2 text-sm font-black text-ink">
             Пароль
             <div className="relative">
               <input
+                id="login-password"
                 data-testid="login-password"
                 type={showPassword ? "text" : "password"}
-                className="w-full rounded-xl bg-white px-3 py-3 pr-11 text-ink outline-none ring-1 ring-black/5 focus:ring-2 focus:ring-primary/30"
+                autoComplete="current-password"
+                name="password"
+                className="w-full rounded-xl bg-panel px-3 py-3 pr-11 text-ink outline-none ring-1 ring-black/5 focus:ring-2 focus:ring-primary/30"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
@@ -117,7 +124,7 @@ export function LoginPage() {
                 data-testid="toggle-password"
                 aria-label={showPassword ? "Скрыть пароль" : "Показать пароль"}
                 onClick={() => setShowPassword((v) => !v)}
-                className="absolute right-2 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-lg text-stone-400 transition hover:text-primary"
+                className="absolute right-2 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-lg text-inkSoft transition-colors hover:text-primary"
               >
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
@@ -125,9 +132,16 @@ export function LoginPage() {
           </label>
         ) : (
           <div className="space-y-2">
+            <label htmlFor="login-code" className="sr-only">
+              Код из SMS
+            </label>
             <div className="flex gap-2">
               <input
-                className="w-full rounded-xl bg-white px-3 py-3 tracking-[0.3em] text-ink outline-none ring-1 ring-black/5 focus:ring-2 focus:ring-primary/30"
+                id="login-code"
+                autoComplete="one-time-code"
+                inputMode="numeric"
+                spellCheck={false}
+                className="w-full rounded-xl bg-panel px-3 py-3 tracking-[0.3em] text-ink outline-none ring-1 ring-black/5 focus:ring-2 focus:ring-primary/30"
                 placeholder="______"
                 value={code}
                 onChange={(e) => setCode(e.target.value)}
@@ -137,7 +151,7 @@ export function LoginPage() {
               </Button>
             </div>
             {codeSent && devCode && (
-              <p className="text-xs font-bold text-emerald-700">
+              <p className="text-xs font-bold text-mint">
                 Демо-код: <b>{devCode}</b>
               </p>
             )}
@@ -147,16 +161,16 @@ export function LoginPage() {
         {error && <p className="rounded-xl bg-coral/10 px-3 py-2 text-sm font-bold text-primary">{error}</p>}
 
         <Button className="w-full" data-testid="login-submit" disabled={busy} onClick={submit}>
-          {busy ? "Входим..." : "Войти"}
+          {busy ? "Входим…" : "Войти"}
         </Button>
 
-        <p className="flex items-center justify-center gap-1.5 text-center text-[11px] font-bold text-stone-400">
+        <p className="flex items-center justify-center gap-1.5 text-center text-[11px] font-bold text-inkSoft">
           <ShieldCheck size={12} />
           Тест: +7 700 000 0001 / birge123 (покупатель) · 0002 (продавец)
         </p>
       </Card>
 
-      <p className="text-center text-sm font-semibold text-stone-500">
+      <p className="text-center text-sm font-semibold text-inkSoft">
         Нет аккаунта?{" "}
         <Link to="/register" className="font-black text-primary">
           Создать по SIM
