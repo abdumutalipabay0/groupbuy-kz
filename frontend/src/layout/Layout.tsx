@@ -38,8 +38,11 @@ export function Layout() {
 
   return (
     <>
+      <a href="#main-content" className="skip-link">
+        Перейти к содержимому
+      </a>
       {preview && (
-        <div className="fixed inset-x-0 top-0 z-[60] flex items-center justify-center gap-2 bg-ink px-4 py-1.5 text-[11px] font-black text-white">
+        <div className="fixed inset-x-0 top-0 z-[60] flex items-center justify-center gap-2 bg-charcoal px-4 py-1.5 text-[11px] font-black text-white">
           <Eye size={13} />
           Превью без входа — данные демонстрационные
           <button
@@ -51,7 +54,7 @@ export function Layout() {
           </button>
         </div>
       )}
-      <main className={`min-h-screen bg-appBg text-ink ${preview ? "pt-7" : ""}`}>
+      <main id="main-content" className={`min-h-screen bg-appBg text-ink ${preview ? "pt-7" : ""}`}>
         <div key={pathname} className="animate-page-in">
           <Outlet />
         </div>
