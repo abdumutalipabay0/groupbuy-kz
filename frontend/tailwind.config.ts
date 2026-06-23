@@ -6,19 +6,21 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Theme-aware tokens — values live in src/index.css (:root / .dark)
-        panel: "var(--surface)",
-        panelSoft: "var(--surface-soft)",
-        primary: "var(--accent)",
-        primaryDeep: "var(--accent-deep)",
-        coral: "var(--coral)",
-        mint: "var(--mint)",
-        appBg: "var(--bg)",
-        coupon: "var(--gold)",
-        ink: "var(--ink)",
-        inkSoft: "var(--ink-soft)",
+        // Theme-aware tokens — values live in src/index.css (:root / .dark) as
+        // space-separated "R G B" triples so opacity modifiers (bg-primary/10)
+        // keep working via Tailwind's rgb(var(--x) / <alpha-value>) pattern.
+        panel: "rgb(var(--surface) / <alpha-value>)",
+        panelSoft: "rgb(var(--surface-soft) / <alpha-value>)",
+        primary: "rgb(var(--accent) / <alpha-value>)",
+        primaryDeep: "rgb(var(--accent-deep) / <alpha-value>)",
+        coral: "rgb(var(--coral) / <alpha-value>)",
+        mint: "rgb(var(--mint) / <alpha-value>)",
+        appBg: "rgb(var(--bg) / <alpha-value>)",
+        coupon: "rgb(var(--gold) / <alpha-value>)",
+        ink: "rgb(var(--ink) / <alpha-value>)",
+        inkSoft: "rgb(var(--ink-soft) / <alpha-value>)",
         // Fixed-dark surface — chips/overlays/banners that stay dark in both themes
-        charcoal: "var(--charcoal)",
+        charcoal: "rgb(var(--charcoal) / <alpha-value>)",
         hairline: "var(--border)"
       },
       fontFamily: {
