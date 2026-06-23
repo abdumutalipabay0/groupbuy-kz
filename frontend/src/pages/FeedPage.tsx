@@ -111,28 +111,28 @@ export function FeedPage() {
   return (
     <div className="w-full bg-appBg pb-28">
       {/* Glass header */}
-      <header className="glass sticky top-0 z-30 border-b border-stone-200/60 px-4 pb-3 pt-3">
+      <header className="glass sticky top-0 z-30 border-b border-hairline px-4 pb-3 pt-3">
         <div className="mx-auto max-w-md md:max-w-3xl lg:max-w-5xl">
           <div className="flex items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-2.5 py-1 shadow-sm ring-1 ring-black/5">
-              <MapPin size={13} className="shrink-0 text-primary" />
-              <span className="text-xs font-bold text-stone-600">{user.city}</span>
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-panel px-2.5 py-1 shadow-sm ring-1 ring-black/5">
+              <MapPin size={13} className="shrink-0 text-primary" aria-hidden="true" />
+              <span className="text-xs font-bold text-inkSoft">{user.city}</span>
             </span>
-            <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-black text-emerald-700 ring-1 ring-emerald-200/60">
+            <span className="rounded-full bg-mint/10 px-2 py-0.5 text-[10px] font-black text-mint ring-1 ring-mint/30">
               {realCount} real items
             </span>
             <div className="ml-auto flex items-center gap-1.5">
               <button
-                className="rounded-full bg-white px-2.5 py-1 text-[11px] font-black text-stone-600 shadow-sm ring-1 ring-black/5 transition hover:ring-primary/30 active:scale-95"
+                className="rounded-full bg-panel px-2.5 py-1 text-[11px] font-black text-inkSoft shadow-sm ring-1 ring-black/5 transition-colors hover:ring-primary/30 active:scale-95"
                 data-testid="lang-switch"
                 onClick={() => setLang(lang === "ru" ? "kz" : "ru")}
               >
                 {lang === "ru" ? "ҚАЗ" : "РУС"}
               </button>
               <button
-                className="grid h-7 w-7 place-items-center rounded-full bg-white text-stone-600 shadow-sm ring-1 ring-black/5 transition hover:ring-primary/30 active:scale-95"
+                className="grid h-7 w-7 place-items-center rounded-full bg-panel text-inkSoft shadow-sm ring-1 ring-black/5 transition-colors hover:ring-primary/30 active:scale-95"
                 data-testid="theme-switch"
-                aria-label="Toggle dark mode"
+                aria-label={theme === "dark" ? "Включить светлую тему" : "Включить тёмную тему"}
                 onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
               >
                 {theme === "dark" ? <Sun size={14} /> : <Moon size={14} />}
@@ -140,17 +140,24 @@ export function FeedPage() {
               <NotificationsBell />
             </div>
           </div>
-          <div className="mt-2.5 flex items-center gap-2 rounded-2xl bg-white px-3.5 py-2.5 shadow-sm ring-1 ring-black/5 transition focus-within:ring-2 focus-within:ring-primary/30">
-            <Search size={16} className="shrink-0 text-stone-400" />
+          <div className="mt-2.5 flex items-center gap-2 rounded-2xl bg-panel px-3.5 py-2.5 shadow-sm ring-1 ring-black/5 transition-shadow focus-within:ring-2 focus-within:ring-primary/30">
+            <Search size={16} className="shrink-0 text-inkSoft" aria-hidden="true" />
+            <label htmlFor="feed-search" className="sr-only">
+              {t("feed_search")}
+            </label>
             <input
-              className="flex-1 bg-transparent text-sm text-stone-800 placeholder-stone-400 outline-none"
+              id="feed-search"
+              name="search"
+              autoComplete="off"
+              className="flex-1 bg-transparent text-sm text-ink placeholder-inkSoft outline-none"
               placeholder={t("feed_search")}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
             {search && (
               <button
-                className="text-xs text-stone-400 hover:text-primary"
+                aria-label="Очистить поиск"
+                className="text-xs text-inkSoft hover:text-primary"
                 onClick={() => setSearch("")}
               >
                 ✕
@@ -168,8 +175,8 @@ export function FeedPage() {
           <div className="relative">
             <div className="flex items-start justify-between gap-3">
               <div>
-                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/70">GroupBuy KZ</p>
-                <h1 className="mt-2 font-display text-[21px] font-black leading-snug md:text-3xl">
+                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/70">Birge</p>
+                <h1 className="mt-2 font-display text-[21px] font-black leading-snug md:text-3xl text-balance">
                   {t("feed_hero_title_1")}
                   <br />
                   {t("feed_hero_title_2")}
@@ -179,7 +186,7 @@ export function FeedPage() {
                 </p>
               </div>
               <div className="animate-float rounded-2xl bg-white/15 px-3 py-2.5 text-center backdrop-blur-sm">
-                <p className="font-display text-xl font-black">{realCount}</p>
+                <p className="font-display text-xl font-black tabular-nums">{realCount}</p>
                 <p className="text-[10px] font-bold text-white/75">real</p>
               </div>
             </div>
@@ -200,13 +207,13 @@ export function FeedPage() {
 
         {/* AI buyer entry */}
         <Link to="/ai" className="mx-4 mt-3 block">
-          <div className="flex items-center gap-3 rounded-2xl border border-stone-100 bg-white px-3.5 py-3 shadow-card transition hover:shadow-lift">
+          <div className="flex items-center gap-3 rounded-2xl border border-hairline bg-panel px-3.5 py-3 shadow-card transition-shadow hover:shadow-lift">
             <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-fire-gradient text-white shadow-glow">
-              <Sparkles size={17} />
+              <Sparkles size={17} aria-hidden="true" />
             </span>
             <div className="min-w-0 flex-1">
-              <p className="text-sm font-black text-stone-900">AI-байер</p>
-              <p className="truncate text-xs font-medium text-stone-500">{t("feed_ai_hint")}</p>
+              <p className="text-sm font-black text-ink">AI-байер</p>
+              <p className="truncate text-xs font-medium text-inkSoft">{t("feed_ai_hint")}</p>
             </div>
             <span className="shrink-0 rounded-full bg-primary/10 px-2.5 py-1 text-[11px] font-black text-primary">
               {t("feed_ai_ask")}
@@ -222,14 +229,15 @@ export function FeedPage() {
               return (
                 <button
                   key={label}
-                  className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-2 text-xs font-black transition-all active:scale-95 ${
+                  aria-pressed={active}
+                  className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-2 text-xs font-black transition-[background-color,box-shadow,transform] active:scale-95 ${
                     active
-                      ? "bg-ink text-white shadow-card"
-                      : "bg-white text-stone-700 shadow-sm ring-1 ring-black/5 hover:ring-black/10"
+                      ? "bg-charcoal text-white shadow-card"
+                      : "bg-panel text-ink shadow-sm ring-1 ring-black/5 hover:ring-black/10"
                   }`}
                   onClick={() => setCategory(active ? null : cat)}
                 >
-                  <Icon size={15} strokeWidth={2} />
+                  <Icon size={15} strokeWidth={2} aria-hidden="true" />
                   {label}
                 </button>
               );
@@ -242,9 +250,9 @@ export function FeedPage() {
           <section className="mt-5 px-4">
             <div className="mb-2.5 flex items-center gap-1.5">
               <span className="grid h-6 w-6 place-items-center rounded-lg bg-fire-gradient text-white shadow-glow">
-                <Flame size={13} />
+                <Flame size={13} aria-hidden="true" />
               </span>
-              <h2 className="text-base font-black text-stone-900">{t("feed_hot")}</h2>
+              <h2 className="text-base font-black text-ink">{t("feed_hot")}</h2>
             </div>
             <div className="space-y-2 md:grid md:grid-cols-3 md:gap-2.5 md:space-y-0">
               {hotGroups.map((g, idx) => {
@@ -256,25 +264,25 @@ export function FeedPage() {
                 return (
                   <Link key={g.id} to={`/product/${prod.id}`} className="block">
                     <div
-                      className="animate-card-in flex items-center gap-3 rounded-2xl border border-orange-100 bg-white px-3 py-2.5 shadow-card transition hover:shadow-lift"
+                      className="animate-card-in flex items-center gap-3 rounded-2xl border border-coral/20 bg-panel px-3 py-2.5 shadow-card transition-shadow hover:shadow-lift"
                       style={{ animationDelay: `${idx * 70}ms` }}
                     >
-                      <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-orange-50 to-red-50 text-xl">
+                      <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-coral/10 to-primary/10 text-xl">
                         🔥
                       </div>
                       <div className="min-w-0 flex-1">
-                        <p className="truncate text-sm font-bold text-stone-800">{prod.name}</p>
-                        <div className="mt-0.5 flex items-center gap-2 text-xs text-stone-500">
-                          <span className="inline-flex items-center gap-0.5 font-semibold">
-                            <Users size={11} /> {g.current_members}/{g.threshold}
+                        <p className="truncate text-sm font-bold text-ink">{prod.name}</p>
+                        <div className="mt-0.5 flex items-center gap-2 text-xs text-inkSoft">
+                          <span className="inline-flex items-center gap-0.5 font-semibold tabular-nums">
+                            <Users size={11} aria-hidden="true" /> {g.current_members}/{g.threshold}
                           </span>
-                          <span>·</span>
+                          <span aria-hidden="true">·</span>
                           <CountdownTimer expiresAt={g.expires_at} className="font-bold" />
                         </div>
                       </div>
                       <div className="shrink-0 text-right">
-                        <p className="text-sm font-black text-primary">{formatPrice(g.price_current, user.currency_preference as Currency, locale)}</p>
-                        <p className="text-[11px] font-bold text-emerald-600">-{pct}%</p>
+                        <p className="text-sm font-black text-primary tabular-nums">{formatPrice(g.price_current, user.currency_preference as Currency, locale)}</p>
+                        <p className="text-[11px] font-bold text-mint">-{pct}%</p>
                       </div>
                       <div className="shrink-0 rounded-full bg-fire-gradient px-2.5 py-1 text-[11px] font-black text-white shadow-glow">
                         {spotsLeft === 0 ? "готово" : `+${spotsLeft}`}
@@ -288,11 +296,11 @@ export function FeedPage() {
         )}
 
         <div className="mt-5 flex items-center justify-between px-4">
-          <h2 className="text-base font-black text-stone-900">
+          <h2 className="text-base font-black text-ink">
             {category ? t("feed_category") : t("feed_popular")}
           </h2>
           {!loading && !error && (
-            <span className="rounded-full bg-white px-2.5 py-1 text-xs font-bold text-stone-500 shadow-sm ring-1 ring-black/5">
+            <span className="rounded-full bg-panel px-2.5 py-1 text-xs font-bold text-inkSoft shadow-sm ring-1 ring-black/5 tabular-nums">
               {filteredProducts.length} {t("feed_products")}
             </span>
           )}
@@ -302,12 +310,12 @@ export function FeedPage() {
         {loading ? (
           <FeedSkeleton />
         ) : error ? (
-          <div className="mx-4 mt-5 rounded-2xl border border-stone-100 bg-white p-4 font-medium text-primary shadow-card">
+          <div className="mx-4 mt-5 rounded-2xl border border-hairline bg-panel p-4 font-medium text-primary shadow-card">
             {error}
           </div>
         ) : filteredProducts.length === 0 ? (
-          <div className="mt-10 px-4 text-center text-stone-500">
-            <p className="text-3xl">🔍</p>
+          <div className="mt-10 px-4 text-center text-inkSoft">
+            <p className="text-3xl" aria-hidden="true">🔍</p>
             <p className="mt-2 font-medium">
               {search
                 ? `Ничего не найдено по «${search}»`

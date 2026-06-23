@@ -229,7 +229,7 @@ export function ProductPage() {
     return (
       <div className="mx-auto w-full max-w-2xl pb-44">
         <div className="skeleton aspect-square w-full" />
-        <div className="mx-4 -mt-4 space-y-3 rounded-2xl border border-stone-100 bg-white p-4 shadow-card">
+        <div className="mx-4 -mt-4 space-y-3 rounded-2xl border border-hairline bg-panel p-4 shadow-card">
           <div className="skeleton h-5 w-2/3 rounded-md" />
           <div className="skeleton h-3.5 w-full rounded-md" />
           <div className="skeleton h-16 w-full rounded-2xl" />
@@ -244,12 +244,12 @@ export function ProductPage() {
       <div className="mx-auto max-w-3xl px-4 py-10">
         <Link
           to="/feed"
-          className="mb-4 inline-flex items-center gap-2 text-sm font-bold text-stone-600 hover:text-primary"
+          className="mb-4 inline-flex items-center gap-2 text-sm font-bold text-inkSoft hover:text-primary"
         >
           <ChevronLeft size={16} />
           Назад в ленту
         </Link>
-        <Card className="border-coral/30 bg-white text-primary">
+        <Card className="border-coral/30 bg-panel text-primary">
           {error ?? "Товар не найден"}
         </Card>
       </div>
@@ -258,35 +258,35 @@ export function ProductPage() {
 
   return (
     <div className="mx-auto w-full max-w-2xl pb-48 lg:max-w-6xl">
-      <header className="glass sticky top-0 z-30 flex items-center justify-between gap-4 border-b border-stone-200/60 px-4 py-3">
+      <header className="glass sticky top-0 z-30 flex items-center justify-between gap-4 border-b border-hairline px-4 py-3">
         <Link
           to="/feed"
-          className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-sm font-semibold text-stone-700 shadow-sm ring-1 ring-black/5 transition hover:text-primary"
+          className="inline-flex items-center gap-1.5 rounded-full bg-panel px-3 py-1.5 text-sm font-semibold text-ink shadow-sm ring-1 ring-black/5 transition-colors hover:text-primary"
         >
           <ChevronLeft size={17} />
           Назад
         </Link>
-        <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-stone-500">
-          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" />
+        <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-inkSoft">
+          <span aria-hidden="true" className="h-1.5 w-1.5 animate-pulse rounded-full bg-mint" />
           {viewingCount} смотрят
         </span>
       </header>
 
       <div className="lg:grid lg:grid-cols-[1fr_1.08fr] lg:items-start lg:gap-8 lg:px-8 lg:pt-6">
-      <div className="relative aspect-square overflow-hidden bg-stone-100 lg:sticky lg:top-[72px] lg:rounded-3xl lg:shadow-card">
+      <div className="relative aspect-square overflow-hidden bg-panelSoft lg:sticky lg:top-[72px] lg:rounded-3xl lg:shadow-card">
         <ProductVisual product={product} size="detail" className="h-full w-full" />
         <div className="absolute inset-x-0 bottom-0 flex items-end justify-between bg-gradient-to-t from-black/45 to-transparent p-3 pb-7">
           <span className="glass inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-bold text-ink">
             {product.marketplace}
           </span>
-          <span className="rounded-full bg-black/40 px-2.5 py-1 text-xs font-semibold text-white backdrop-blur-sm">
+          <span className="rounded-full bg-black/40 px-2.5 py-1 text-xs font-semibold text-white backdrop-blur-sm tabular-nums">
             {318 + product.id.charCodeAt(product.id.length - 1) * 7} купили
           </span>
         </div>
       </div>
 
       <div className="lg:min-w-0">
-      <div className="relative mx-4 -mt-5 rounded-2xl border border-stone-100 bg-white p-4 shadow-lift lg:mx-0 lg:mt-0">
+      <div className="relative mx-4 -mt-5 rounded-2xl border border-hairline bg-panel p-4 shadow-lift lg:mx-0 lg:mt-0">
         <div className="flex flex-wrap gap-2">
           <Badge tone="blue">{product.marketplace}</Badge>
           <Badge tone="slate">{product.category}</Badge>
@@ -298,30 +298,30 @@ export function ProductPage() {
           )}
         </div>
 
-        <h1 className="mt-3 text-xl font-black leading-snug text-stone-900">{product.name}</h1>
-        <p className="mt-1.5 text-sm font-normal leading-6 text-stone-500">
+        <h1 className="mt-3 text-xl font-black leading-snug text-ink">{product.name}</h1>
+        <p className="mt-1.5 text-sm font-normal leading-6 text-inkSoft">
           {product.description}
         </p>
         {product.source_price && product.source_currency && (
-          <p className="mt-2 text-xs font-semibold text-stone-400">
+          <p className="mt-2 text-xs font-semibold text-inkSoft">
             Source price: {product.source_price} {product.source_currency}
             {product.source_location ? ` · ${product.source_location}` : ""}
           </p>
         )}
 
-        <div className="mt-3 flex items-center gap-3 rounded-2xl bg-stone-50 px-4 py-3">
+        <div className="mt-3 flex items-center gap-3 rounded-2xl bg-panelSoft px-4 py-3">
           <div>
-            <p className="text-[11px] font-medium text-stone-400">{t("product_alone")}</p>
-            <p className="text-base font-semibold text-stone-400 line-through">
+            <p className="text-[11px] font-medium text-inkSoft">{t("product_alone")}</p>
+            <p className="text-base font-semibold text-inkSoft line-through">
               {formatPrice(product.price_individual, user.currency_preference, locale)}
             </p>
           </div>
-          <div className="text-stone-300">→</div>
-          <div>
-            <p className="text-[11px] font-medium text-stone-500">{group ? t("product_together") : "Оценка группой"}</p>
+          <div className="text-inkSoft" aria-hidden="true">→</div>
+          <div aria-live="polite">
+            <p className="text-[11px] font-medium text-inkSoft">{group ? t("product_together") : "Оценка группой"}</p>
             <p
               className={cn(
-                "text-[26px] font-black leading-tight tracking-tight text-primary transition-all duration-500",
+                "text-[26px] font-black leading-tight tracking-tight text-primary transition-[color,transform] duration-500 tabular-nums",
                 priceFlash ? "price-drop-flash" : ""
               )}
               key={displayPrice}
@@ -330,13 +330,13 @@ export function ProductPage() {
             </p>
           </div>
           {savings > 0 && (
-            <span className="ml-auto rounded-xl bg-gold-gradient px-2.5 py-1.5 text-sm font-black text-ink shadow-sm">
+            <span className="ml-auto rounded-xl bg-gold-gradient px-2.5 py-1.5 text-sm font-black text-charcoal shadow-sm tabular-nums">
               -{savingsPct(product.price_individual, displayPrice)}%
             </span>
           )}
         </div>
         {savings > 0 && (
-          <p className="mt-2 text-center text-xs font-black text-emerald-700">
+          <p className="mt-2 text-center text-xs font-black text-mint">
             💸 {t("product_your_savings")} — {formatPrice(savings, user.currency_preference, locale)}
           </p>
         )}
@@ -348,19 +348,19 @@ export function ProductPage() {
       <div className="mx-4 mt-3 grid grid-cols-3 gap-2 lg:mx-0">
         {[
           {
-            icon: <ShieldCheck size={17} />,
-            iconBg: "bg-emerald-50 text-emerald-600",
+            icon: <ShieldCheck size={17} aria-hidden="true" />,
+            iconBg: "bg-mint/10 text-mint",
             title: `${group ? Math.min(group.current_members, 8) : 4} SIM`,
             sub: "верифицировано",
           },
           {
-            icon: <Truck size={17} />,
+            icon: <Truck size={17} aria-hidden="true" />,
             iconBg: "bg-blue-50 text-blue-600",
             title: "7–12 дней",
             sub: `в ${user.city}`,
           },
           {
-            icon: <span className="text-base">⭐</span>,
+            icon: <span className="text-base" aria-hidden="true">⭐</span>,
             iconBg: "bg-amber-50 text-amber-600",
             title: `${product.rating.toFixed(1)}/5`,
             sub: "рейтинг",
@@ -368,20 +368,20 @@ export function ProductPage() {
         ].map(({ icon, iconBg, title, sub }) => (
           <div
             key={sub}
-            className="flex flex-col items-center gap-1.5 rounded-2xl border border-stone-100 bg-white px-2 py-3 text-center shadow-card"
+            className="flex flex-col items-center gap-1.5 rounded-2xl border border-hairline bg-panel px-2 py-3 text-center shadow-card"
           >
             <span className={`grid h-8 w-8 place-items-center rounded-xl ${iconBg}`}>{icon}</span>
-            <p className="text-[11px] font-black text-stone-700">{title}</p>
-            <p className="text-[10px] text-stone-400">{sub}</p>
+            <p className="text-[11px] font-black text-ink tabular-nums">{title}</p>
+            <p className="text-[10px] text-inkSoft">{sub}</p>
           </div>
         ))}
       </div>
 
-      <section className="mx-4 mt-4 space-y-4 rounded-2xl border border-stone-100 bg-white p-4 shadow-card lg:mx-0">
+      <section className="mx-4 mt-4 space-y-4 rounded-2xl border border-hairline bg-panel p-4 shadow-card lg:mx-0">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <p className="text-base font-black text-stone-800">Групповая покупка</p>
-            <p className="mt-0.5 text-xs font-medium text-stone-500">
+            <p className="text-base font-black text-ink">Групповая покупка</p>
+            <p className="mt-0.5 text-xs font-medium text-inkSoft">
               Когда команда набрана — все платят меньше
             </p>
           </div>
@@ -403,7 +403,7 @@ export function ProductPage() {
                 {AVATARS.slice(0, avatarCount).map((av, idx) => (
                   <span
                     key={`${av}-${idx}`}
-                    className="grid h-8 w-8 place-items-center rounded-full border-2 border-white text-[11px] font-black text-white shadow-sm"
+                    className="grid h-8 w-8 place-items-center rounded-full border-2 border-panel text-[11px] font-black text-white shadow-sm"
                     style={{
                       background: `linear-gradient(135deg, hsl(${(idx * 47 + 8) % 360} 72% 52%), hsl(${(idx * 47 + 48) % 360} 72% 40%))`,
                     }}
@@ -412,15 +412,15 @@ export function ProductPage() {
                   </span>
                 ))}
               </div>
-              <p className="text-right text-xs font-semibold text-stone-500">
+              <p className="text-right text-xs font-semibold text-inkSoft">
                 {groupCompleted ? "Цена открыта" : `Осталось ${spotsLeft} мест`}
               </p>
             </div>
           </>
         ) : (
-          <div className="rounded-2xl border border-dashed border-stone-300 bg-stone-50 p-4">
-            <p className="text-sm font-black text-stone-900">Активной команды пока нет</p>
-            <p className="mt-1 text-xs font-semibold leading-5 text-stone-500">
+          <div className="rounded-2xl border border-dashed border-hairline bg-panelSoft p-4">
+            <p className="text-sm font-black text-ink">Активной команды пока нет</p>
+            <p className="mt-1 text-xs font-semibold leading-5 text-inkSoft">
               Товар в каталоге реальный. Для демо команда создается на товарах с активным групповым сбором.
             </p>
           </div>
@@ -445,8 +445,8 @@ export function ProductPage() {
         </Button>
 
         {joined && (
-          <div className="animate-slide-in-up rounded-2xl border border-yellow-300/70 bg-gold-gradient p-3 shadow-card">
-            <p className="text-sm font-black text-ink">Добей сделку: отправь ссылку другу</p>
+          <div className="animate-slide-in-up rounded-2xl border border-gold/40 bg-gold-gradient p-3 shadow-card">
+            <p className="text-sm font-black text-charcoal">Добей сделку: отправь ссылку другу</p>
             <div className="mt-2 grid grid-cols-2 gap-2">
               <Button
                 variant="primary"
@@ -455,10 +455,10 @@ export function ProductPage() {
                 disabled={simulating}
                 onClick={copyInvite}
               >
-                {simulating ? "Друзья заходят..." : copied ? "Скопировано ✓" : "Скопировать"}
+                {simulating ? "Друзья заходят…" : copied ? "Скопировано ✓" : "Скопировать"}
               </Button>
               <a
-                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[#229ED9] px-3 py-2 text-sm font-black text-white transition hover:brightness-110 active:scale-[0.97]"
+                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[#229ED9] px-3 py-2 text-sm font-black text-white transition-[filter] hover:brightness-110 active:scale-[0.97]"
                 href={`https://t.me/share/url?url=${encodeURIComponent(inviteUrl)}&text=${encodeURIComponent(inviteText)}`}
                 target="_blank"
                 rel="noreferrer"
@@ -468,11 +468,11 @@ export function ProductPage() {
               </a>
             </div>
             {liveEvents.length > 0 && (
-              <div className="mt-3 space-y-1 rounded-xl bg-white/75 p-2 backdrop-blur-sm">
+              <div className="mt-3 space-y-1 rounded-xl bg-white/75 p-2 backdrop-blur-sm" aria-live="polite">
                 {liveEvents.slice(-5).map((ev, idx) => (
                   <p
                     key={`${ev}-${idx}`}
-                    className="animate-slide-in-up text-xs font-semibold text-stone-700"
+                    className="animate-slide-in-up text-xs font-semibold text-charcoal"
                   >
                     {ev}
                   </p>
@@ -497,19 +497,19 @@ export function ProductPage() {
         <div className="fixed inset-x-3 bottom-[86px] z-40 lg:hidden">
           <div className="glass mx-auto max-w-2xl rounded-2xl border border-white/60 p-2 shadow-nav">
             <div className="grid grid-cols-[0.85fr_1.15fr] gap-2">
-              <div className="rounded-xl bg-stone-100/80 px-3 py-2 text-center">
-                <span className="block text-[11px] font-medium text-stone-400">Одному</span>
-                <span className="block text-sm font-semibold text-stone-400 line-through">
+              <div className="rounded-xl bg-panelSoft px-3 py-2 text-center">
+                <span className="block text-[11px] font-medium text-inkSoft">Одному</span>
+                <span className="block text-sm font-semibold text-inkSoft line-through">
                   {formatPrice(product.price_individual, user.currency_preference, locale)}
                 </span>
               </div>
               <button
                 data-testid="sticky-team-action"
                 className={cn(
-                  "rounded-xl px-3 py-2 text-center text-white transition-all active:scale-[0.98]",
+                  "rounded-xl px-3 py-2 text-center text-white transition-[background-color,box-shadow,transform] active:scale-[0.98]",
                   joined
                     ? "bg-[#229ED9] shadow-lg disabled:bg-[#229ED9]/60"
-                    : "bg-fire-gradient shadow-glow disabled:bg-none disabled:bg-stone-300 disabled:shadow-none"
+                    : "bg-fire-gradient shadow-glow disabled:bg-none disabled:bg-panelSoft disabled:shadow-none"
                 )}
                 disabled={simulating || (!joined && !canJoin)}
                 onClick={joined ? copyInvite : joinGroup}
@@ -527,9 +527,9 @@ export function ProductPage() {
                     ? "последний рывок"
                     : "командой сейчас"}
                 </span>
-                <span className="block text-lg font-black tracking-tight">
+                <span className="block text-lg font-black tracking-tight tabular-nums">
                   {simulating
-                    ? "Подожди..."
+                    ? "Подожди…"
                     : joined
                     ? "Скопировать invite"
                     : groupExpired

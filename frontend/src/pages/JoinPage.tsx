@@ -113,11 +113,11 @@ export function JoinPage() {
   if (error || !product || !group) {
     return (
       <div className="mx-auto max-w-md px-4 py-8">
-        <Link to="/feed" className="inline-flex items-center gap-2 text-sm font-black text-stone-600 transition hover:text-primary">
+        <Link to="/feed" className="inline-flex items-center gap-2 text-sm font-black text-inkSoft transition-colors hover:text-primary">
           <ChevronLeft size={16} />
           Лента
         </Link>
-        <div className="mt-4 rounded-2xl border border-stone-100 bg-white p-4 font-bold text-primary shadow-card">{error ?? "Команда не найдена"}</div>
+        <div className="mt-4 rounded-2xl border border-hairline bg-panel p-4 font-bold text-primary shadow-card">{error ?? "Команда не найдена"}</div>
       </div>
     );
   }
@@ -143,12 +143,12 @@ export function JoinPage() {
         <div className="pointer-events-none absolute -right-10 -top-16 h-44 w-44 rounded-full bg-white/15 blur-2xl" />
         <div className="pointer-events-none absolute -bottom-20 -left-8 h-40 w-40 rounded-full bg-black/15 blur-2xl" />
         <div className="relative">
-          <Link to="/feed" className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1.5 text-sm font-black text-white/90 backdrop-blur-sm transition-all active:scale-95">
+          <Link to="/feed" className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1.5 text-sm font-black text-white/90 backdrop-blur-sm transition-transform active:scale-95">
             <ChevronLeft size={16} />
             Назад
           </Link>
           <p className="mt-5 text-[10px] font-black uppercase tracking-[0.2em] text-white/70">Telegram invite</p>
-          <h1 className="mt-2 font-display text-2xl font-black leading-snug">Друг зовёт добить цену</h1>
+          <h1 className="mt-2 font-display text-2xl font-black leading-snug text-balance">Друг зовёт добить цену</h1>
           <div className="mt-3 inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-xs font-black backdrop-blur-sm">
             <ShieldCheck size={15} />
             SIM-trust: меньше фейковых групп
@@ -157,26 +157,26 @@ export function JoinPage() {
       </header>
 
       <section className="p-4">
-        <ProductVisual product={product} className="aspect-square overflow-hidden rounded-2xl border border-stone-100 shadow-card" />
+        <ProductVisual product={product} className="aspect-square overflow-hidden rounded-2xl border border-hairline shadow-card" />
 
-        <div className="mt-4 rounded-2xl border border-stone-100 bg-white p-4 shadow-lift">
-          <div className="flex items-start justify-between gap-3">
+        <div className="mt-4 rounded-2xl border border-hairline bg-panel p-4 shadow-lift">
+          <div className="flex items-start justify-between gap-3" aria-live="polite">
             <div>
-              <p className="text-[11px] font-black uppercase tracking-wider text-stone-400">Командная цена</p>
-              <p className="text-4xl font-black tracking-tight text-primary">{formatPrice(finalPrice, user.currency_preference, locale)}</p>
-              <p className="text-sm font-bold text-stone-400 line-through">одному {formatPrice(product.price_individual, user.currency_preference, locale)}</p>
+              <p className="text-[11px] font-black uppercase tracking-wider text-inkSoft">Командная цена</p>
+              <p className="text-4xl font-black tracking-tight text-primary tabular-nums">{formatPrice(finalPrice, user.currency_preference, locale)}</p>
+              <p className="text-sm font-bold text-inkSoft line-through">одному {formatPrice(product.price_individual, user.currency_preference, locale)}</p>
             </div>
-            <div className="rounded-xl bg-gold-gradient px-3 py-2 text-right text-xs font-black text-ink shadow-sm">
+            <div className="rounded-xl bg-gold-gradient px-3 py-2 text-right text-xs font-black text-charcoal shadow-sm">
               экономия<br />
               {formatPrice(savings, user.currency_preference, locale)}
             </div>
           </div>
 
-          <h2 className="mt-4 text-xl font-black leading-snug text-stone-900">{product.name}</h2>
-          <div className="mt-3 rounded-2xl bg-stone-50 p-3">
-            <div className="flex items-center justify-between text-xs font-black text-stone-600">
-              <span className="inline-flex items-center gap-1">
-                <Users size={14} />
+          <h2 className="mt-4 text-xl font-black leading-snug text-ink">{product.name}</h2>
+          <div className="mt-3 rounded-2xl bg-panelSoft p-3">
+            <div className="flex items-center justify-between text-xs font-black text-inkSoft">
+              <span className="inline-flex items-center gap-1 tabular-nums">
+                <Users size={14} aria-hidden="true" />
                 {group.current_members}/{group.threshold}
               </span>
               <span className="inline-flex items-center gap-1 text-primary">
@@ -186,7 +186,7 @@ export function JoinPage() {
             <ProgressBar value={progress} className="mt-2" />
             <div className="mt-2 flex items-center justify-between">
               <p className="text-sm font-black text-primary">{left === 0 ? "🎉 Команда готова" : `Осталось ${left} ${left === 1 ? "место" : "места"}`}</p>
-              <p className="text-xs font-black text-emerald-600">-{savingsPct(product.price_individual, finalPrice)}%</p>
+              <p className="text-xs font-black text-mint">-{savingsPct(product.price_individual, finalPrice)}%</p>
             </div>
           </div>
         </div>
@@ -199,10 +199,10 @@ export function JoinPage() {
           {INVITE_EVENTS.map((event, idx) => (
             <div
               key={event}
-              className="animate-card-in flex items-center gap-2 rounded-2xl border border-stone-100 bg-white p-3 text-sm font-black shadow-card"
+              className="animate-card-in flex items-center gap-2 rounded-2xl border border-hairline bg-panel p-3 text-sm font-black shadow-card"
               style={{ animationDelay: `${idx * 50}ms` }}
             >
-              <CheckCircle2 size={17} className="text-emerald-600" />
+              <CheckCircle2 size={17} className="text-mint" aria-hidden="true" />
               {event}
             </div>
           ))}
