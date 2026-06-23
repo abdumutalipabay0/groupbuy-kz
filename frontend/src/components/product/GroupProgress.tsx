@@ -15,7 +15,7 @@ export function GroupProgress({ group, product }: GroupProgressProps) {
   return (
     <div className="space-y-2">
       <ProgressBar value={progress} />
-      <div className="flex items-center justify-between text-[11px] font-bold text-stone-600">
+      <div className="flex items-center justify-between text-[11px] font-bold text-inkSoft">
         <span>
           {members}/{threshold} в команде
         </span>

@@ -1,6 +1,7 @@
 import { Link, useParams } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { CheckCircle2, ChevronLeft, Send, ShieldCheck, Users } from "lucide-react";
+import { PriceLadder } from "@/components/product/PriceLadder";
 import { ProductVisual } from "@/components/product/ProductVisual";
 import { ProgressBar } from "@/components/ui/ProgressBar";
 import { Button } from "@/components/ui/Button";
@@ -188,6 +189,10 @@ export function JoinPage() {
               <p className="text-xs font-black text-emerald-600">-{savingsPct(product.price_individual, finalPrice)}%</p>
             </div>
           </div>
+        </div>
+
+        <div className="mt-3">
+          <PriceLadder product={product} currentMembers={group.current_members} currency={user.currency_preference} />
         </div>
 
         <div className="mt-3 space-y-2">

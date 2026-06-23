@@ -2,6 +2,7 @@ import { Link, useParams } from "react-router-dom";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Check, ChevronLeft, Send, ShieldCheck, Truck, Users } from "lucide-react";
 import { GroupProgress } from "@/components/product/GroupProgress";
+import { PriceLadder } from "@/components/product/PriceLadder";
 import { ProductVisual } from "@/components/product/ProductVisual";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
@@ -12,62 +13,9 @@ import { api } from "@/lib/api";
 import { useT } from "@/lib/i18n";
 import { GROUP_POLL_MS, calculateGroupPrice, cn, formatPrice, isGroupExpired, isGroupJoinable, savingsPct } from "@/lib/utils";
 import { DEMO_USER, useGroupBuyStore } from "@/lib/store";
-import type { Currency, Group, Product, ProductDetail } from "@/types";
+import type { Group, Product, ProductDetail } from "@/types";
 
 const AVATARS = ["AN", "TM", "DK", "AZ", "MR", "LK", "JS", "BK", "YA", "IV"];
-
-function PriceLadder({
-  product,
-  currentMembers,
-  currency,
-}: {
-  product: Product;
-  currentMembers: number;
-  currency: Currency;
-}) {
-  const t = product.group_threshold;
-  const steps = [1, Math.ceil(t * 0.3), Math.ceil(t * 0.6), t];
-  const locale = currency === "USD" ? "en-US" : "ru-KZ";
-  return (
-    <div className="mt-3 rounded-2xl border border-stone-100 bg-stone-50/70 p-3">
-      <div className="flex items-center justify-between">
-        <p className="text-[11px] font-black uppercase tracking-wider text-stone-400">Лестница цен</p>
-        <span className="text-[10px] font-bold text-stone-400">больше людей → дешевле</span>
-      </div>
-      <div className="mt-2 grid grid-cols-4 gap-1.5">
-        {steps.map((n, i) => {
-          const p = calculateGroupPrice(product, n);
-          const pct = Math.round((1 - p / product.price_individual) * 100);
-          const isCurrent = currentMembers >= n && (i === steps.length - 1 || currentMembers < steps[i + 1]);
-          const isReached = currentMembers >= n;
-          return (
-            <div
-              key={n}
-              className={`flex flex-col items-center gap-1 rounded-xl px-1 py-2.5 text-center transition-all ${
-                isCurrent
-                  ? "bg-white shadow-card ring-2 ring-primary"
-                  : isReached
-                  ? "bg-emerald-50/80 ring-1 ring-emerald-200"
-                  : "bg-white/60 ring-1 ring-stone-100"
-              }`}
-            >
-              <span className={`text-[10px] font-bold ${isReached ? "text-emerald-600" : "text-stone-400"}`}>
-                {n === t ? `${n}` : `${n}+`} чел
-              </span>
-              <span className={`text-[13px] font-black leading-none ${isCurrent ? "text-primary" : isReached ? "text-emerald-600" : "text-stone-500"}`}>
-                {formatPrice(p, currency, locale)}
-              </span>
-              <span className={`rounded-md px-1 py-0.5 text-[9px] font-black ${isReached ? "bg-emerald-100 text-emerald-700" : "bg-stone-100 text-stone-500"}`}>
-                -{pct}%
-              </span>
-              {isCurrent && <span className="text-[9px] font-black text-primary">← вы</span>}
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
 
 function useViewingCount(base = 54) {
   const [count, setCount] = useState(base + Math.floor(Math.random() * 30));
@@ -392,7 +340,9 @@ export function ProductPage() {
             💸 {t("product_your_savings")} — {formatPrice(savings, user.currency_preference, locale)}
           </p>
         )}
-        <PriceLadder product={product} currentMembers={group?.current_members ?? 0} currency={user.currency_preference} />
+        <div className="mt-3">
+          <PriceLadder product={product} currentMembers={group?.current_members ?? 0} currency={user.currency_preference} />
+        </div>
       </div>
 
       <div className="mx-4 mt-3 grid grid-cols-3 gap-2 lg:mx-0">
