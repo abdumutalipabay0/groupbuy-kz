@@ -45,16 +45,18 @@ export function BottomNav() {
               <Link
                 key={href}
                 to={href}
+                aria-current={isActive ? "page" : undefined}
                 className="flex flex-col items-center gap-0.5 py-1 text-[10px] font-bold transition-colors"
               >
                 <span
-                  className={`grid h-8 w-14 place-items-center rounded-xl transition-all duration-200 ${
-                    isActive ? "bg-primary/10 text-primary" : "text-stone-400"
+                  aria-hidden="true"
+                  className={`grid h-8 w-14 place-items-center rounded-xl transition-[background-color,color] duration-200 ${
+                    isActive ? "bg-primary/10 text-primary" : "text-inkSoft"
                   }`}
                 >
                   <Icon size={21} strokeWidth={isActive ? 2.3 : 1.8} />
                 </span>
-                <span className={isActive ? "text-primary" : "text-stone-400"}>{text}</span>
+                <span className={isActive ? "text-primary" : "text-inkSoft"}>{text}</span>
               </Link>
             );
           })}

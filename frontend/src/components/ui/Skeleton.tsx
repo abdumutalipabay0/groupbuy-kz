@@ -1,6 +1,6 @@
 export function SkeletonCard() {
   return (
-    <div className="overflow-hidden rounded-2xl border border-stone-100 bg-white shadow-card">
+    <div className="overflow-hidden rounded-2xl border border-hairline bg-panel shadow-card">
       <div className="skeleton aspect-[4/3]" />
       <div className="space-y-2.5 p-3">
         <div className="skeleton h-3.5 w-11/12 rounded-md" />
@@ -29,7 +29,7 @@ export function ListSkeleton({ rows = 4 }: { rows?: number }) {
       {Array.from({ length: rows }, (_, i) => (
         <div
           key={i}
-          className="flex items-center gap-3 rounded-2xl border border-stone-100 bg-white p-3 shadow-card"
+          className="flex items-center gap-3 rounded-2xl border border-hairline bg-panel p-3 shadow-card"
         >
           <div className="skeleton h-[86px] w-[86px] shrink-0 rounded-xl" />
           <div className="flex-1 space-y-2.5">

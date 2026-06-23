@@ -44,7 +44,7 @@ export function NotificationsBell() {
       <button
         data-testid="notif-bell"
         onClick={toggle}
-        className="relative grid h-9 w-9 place-items-center rounded-full text-stone-500 transition hover:bg-white hover:shadow-sm"
+        className="relative grid h-9 w-9 place-items-center rounded-full text-inkSoft transition-colors hover:bg-panel hover:shadow-sm"
         aria-label="Уведомления"
       >
         <Bell size={20} />
@@ -56,31 +56,31 @@ export function NotificationsBell() {
       </button>
 
       {open && (
-        <div className="animate-slide-in-up absolute right-0 top-11 z-50 w-72 overflow-hidden rounded-2xl border border-stone-100 bg-white shadow-lift">
-          <div className="flex items-center justify-between border-b border-stone-100 px-3 py-2">
-            <span className="text-sm font-black text-stone-900">Уведомления</span>
-            {notifications.length > 0 && <CheckCheck size={15} className="text-emerald-500" />}
+        <div className="animate-slide-in-up absolute right-0 top-11 z-50 w-72 overflow-hidden rounded-2xl border border-hairline bg-panel shadow-lift">
+          <div className="flex items-center justify-between border-b border-hairline px-3 py-2">
+            <span className="text-sm font-black text-ink">Уведомления</span>
+            {notifications.length > 0 && <CheckCheck size={15} className="text-mint" aria-hidden="true" />}
           </div>
           {notifications.length === 0 ? (
-            <p className="px-3 py-6 text-center text-xs font-medium text-stone-400">
+            <p className="px-3 py-6 text-center text-xs font-medium text-inkSoft">
               Пока пусто. Вступи в команду — и узнаешь, когда подтянутся друзья.
             </p>
           ) : (
-            <div className="max-h-80 divide-y divide-stone-50 overflow-y-auto">
+            <div className="max-h-80 divide-y divide-hairline overflow-y-auto">
               {notifications.map((n) => {
                 const Icon = ICONS[n.kind];
                 const body = (
-                  <div className="flex items-start gap-2.5 px-3 py-2.5 transition hover:bg-stone-50">
+                  <div className="flex items-start gap-2.5 px-3 py-2.5 transition-colors hover:bg-panelSoft">
                     <span
                       className={`mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-lg text-white ${
                         n.kind === "complete" ? "bg-mint-gradient" : "bg-fire-gradient"
                       }`}
                     >
-                      <Icon size={14} />
+                      <Icon size={14} aria-hidden="true" />
                     </span>
                     <div className="min-w-0">
-                      <p className="text-xs font-semibold leading-snug text-stone-800">{n.text}</p>
-                      <p className="mt-0.5 text-[10px] font-bold text-stone-400">{timeAgo(n.ts)}</p>
+                      <p className="text-xs font-semibold leading-snug text-ink">{n.text}</p>
+                      <p className="mt-0.5 text-[10px] font-bold text-inkSoft">{timeAgo(n.ts)}</p>
                     </div>
                   </div>
                 );
